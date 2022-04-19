@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(JSON.stringify(await Submission.findAll()));
+        res.status(200).json(await Submission.findAll());
         break;
     case "POST":
         res.status(200).json(await Submission.create({ user_id, compilation, code, task_id }));

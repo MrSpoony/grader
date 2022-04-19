@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(JSON.stringify(await Task.findAll({ include: [{ model: Testgroup, as: "testgroups" }] })));
+        res.status(200).json(await Task.findAll({ include: [{ model: Testgroup, as: "testgroups" }] }));
         break;
     case "POST":
         res.status(200).json(await Task.create({ name, statement}));

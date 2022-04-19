@@ -1,5 +1,5 @@
 const models = require("@lib/server");
-const { Task } = models.default;
+const { Testgrouptype } = models.default;
 
 export default async function handler(req, res) {
     const {
@@ -8,13 +8,13 @@ export default async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await Task.findByPk(id));
+        res.status(200).json(await Testgrouptype.findByPk(id));
         break;
     case "DELETE":
-        res.status(200).json(await Task.destroy({ where: { id }}));
+        res.status(200).json(await Testgrouptype.destroy({ where: { id }}));
         break;
     case "PUT":
-        res.status(200).json(await Task.update(req.body, { where: { id } }));
+        res.status(200).json(await Testgrouptype.update(req.body, { where: { id } }));
         break;
     default:
         res.setHeader("Allow", ["GET"]);

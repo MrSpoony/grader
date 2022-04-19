@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(JSON.stringify(await User.findAll({ include: [{ model: Submission, as: "submissions" }] })));
+        res.status(200).json(await User.findAll({ include: [{ model: Submission, as: "submissions" }] }));
         break;
     case "POST":
         res.status(200).json(await User.create({ username, email, password }));
