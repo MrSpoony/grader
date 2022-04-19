@@ -1,22 +1,14 @@
-import Header from "@components/Header"
-import useSession from "@lib/session"
-import Link from "next/link"
+// import useSession from "@lib/session"
 import "./_app.css"
 
 export default function App({ Component, pageProps }) {
-    const session = useSession()
-    const newPageProps = {
-        ...pageProps,
-        session
-    }
+    // const session = useSession()
+    // const newPageProps = {
+    //     ...pageProps,
+    //     session
+    // }
     return (
         <>
-            <Header>
-                <Link href="/" passHref>
-                    app
-                </Link>
-            </Header>
-
             <main className="page">
                 <Component {...newPageProps} />
             </main>

@@ -1,26 +1,34 @@
 {
   "name": "project-template",
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run server\" \"npm run lint-watch\" \"next dev\"",
+    "dev": "concurrently --kill-others \"next dev\"",
     "build:app": "concurrently --kill-others \"npm run server\" \"npm run build\"",
     "start": "concurrently --kill-others \"npm run server\" \"next start\"",
     "build": "next build",
     "lint": "next lint",
     "lint-watch": "nodemon --watch . --exec npm run lint",
-    "server": "json-server-auth --watch ./lib/database/db.json -r ./lib/database/routes.json --port 3001"
+    "generate": "sequelize-auto --cm p --cf p -o \"./lib/database\" -d grader -h 192.168.52.85 -u graderuser -p 3306 -x graderuserpassword -e mysql",
+    "server": "node lib/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "concurrently": "^7.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "fs": "^0.0.1-security",
     "json-server": "^0.17.0",
     "json-server-auth": "^2.1.0",
     "jwt-decode": "^3.1.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
     "next": "^12.1.5",
     "nodemon": "^2.0.15",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "sequelize": "^6.19.0",
+    "sequelize-auto": "^0.8.8"
   },
   "devDependencies": {
     "eslint": "8.4.1",
