@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         await Status       .create({ status: "WA" });
         await Status       .create({ status: "TLE" });
         await Status       .create({ status: "SIG" });
-        await Task         .create({ name: "Testtask", statement: "Teststatement" });
+        await Task         .create({ name: "Addition", statement: "You get two numbers and you have to print out the sum of those" });
         await Testgrouptype.create({ type: "sample"});
         await Testgrouptype.create({ type: "real"});
         await Testgroup    .create({ testgrouptype_id: 1, task_id: 1 });
