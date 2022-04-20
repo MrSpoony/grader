@@ -1,11 +1,10 @@
 const models = require("@lib/server");
-const { User, Status, Task, Testcase, Testgroup, Testgrouptype } = models.default;
+const { Status, Role, Task, Testcase, Testgroup, Testgrouptype } = models.default;
 
 export default async function handler(req, res) {
     const { method } = req;
     switch (method) {
     case "GET":
-        await User         .create({ username: "Spoony", email: "spoony@test.ch", password: "test" });
         await Status       .create({ status: "Success" });
         await Status       .create({ status: "Warning" });
         await Status       .create({ status: "Error" });
@@ -16,8 +15,9 @@ export default async function handler(req, res) {
         await Task         .create({ name: "Addition", statement: "You get two numbers and you have to print out the sum of those" });
         await Testgrouptype.create({ type: "sample"});
         await Testgrouptype.create({ type: "real"});
-        await Testgroup    .create({ testgrouptype_id: 1, task_id: 1 });
-        await Testgroup    .create({ testgrouptype_id: 2, task_id: 1 });
+        await Role         .create({ role: "admin"});
+        await Testgroup    .create({ testgrouptype_id: 1, task_id: 1, points: 30 });
+        await Testgroup    .create({ testgrouptype_id: 2, task_id: 1, points: 50 });
         await Testcase     .create({ testgroup_id: 1, input: "1 2", output: "3"});
         await Testcase     .create({ testgroup_id: 1, input: "4 2", output: "6"});
         await Testcase     .create({ testgroup_id: 2, input: "10000 2", output: "10002"});
