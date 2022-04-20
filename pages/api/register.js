@@ -39,7 +39,7 @@ export async function handler(req, res) {
 
         const hash = await hashPassword(password, 10);
         const newUser = await User.create({ username, email, password: hash});
-        newUser.addRole_id_Roles(rolesWithId);
+        newUser.addRole_id_roles(rolesWithId);
         res.status(200).json(newUser);
 
     }
