@@ -1,5 +1,5 @@
 const models = require("@lib/server");
-const { User, Submission, Role } = models.default;
+const { Role, User } = models.default;
 
 export default async function handler(req, res) {
     const {
@@ -8,16 +8,13 @@ export default async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await User.findByPk(id, { include: [
-            { model: Submission, as: "submissions" },
-            { model: Role, as: "role_id_roles"}
-        ] }));
+        res.status(200).json(await Role.findByPk(id, { include: [{model: User, as: "user_id_users"}]}));
         break;
     case "DELETE":
-        res.status(200).json(await User.destroy({ where: { id }}));
+        res.status(200).json(await Role.destroy({ where: { id }}));
         break;
     case "PUT":
-        res.status(200).json(await User.update(req.body, { where: { id } }));
+        res.status(200).json(await Role.update(req.body, { where: { id } }));
         break;
     default:
         res.setHeader("Allow", ["GET"]);

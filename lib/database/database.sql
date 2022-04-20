@@ -5,22 +5,22 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema grader
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `mydb` ;
+DROP SCHEMA IF EXISTS `grader` ;
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema grader
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `grader` DEFAULT CHARACTER SET utf8 ;
+USE `grader` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`task`
+-- Table `grader`.`task`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`task` ;
+DROP TABLE IF EXISTS `grader`.`task` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`task` (
+CREATE TABLE IF NOT EXISTS `grader`.`task` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   `statement` TEXT NULL,
@@ -30,11 +30,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`testgrouptype`
+-- Table `grader`.`testgrouptype`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`testgrouptype` ;
+DROP TABLE IF EXISTS `grader`.`testgrouptype` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`testgrouptype` (
+CREATE TABLE IF NOT EXISTS `grader`.`testgrouptype` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
@@ -44,11 +44,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`testgroup`
+-- Table `grader`.`testgroup`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`testgroup` ;
+DROP TABLE IF EXISTS `grader`.`testgroup` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`testgroup` (
+CREATE TABLE IF NOT EXISTS `grader`.`testgroup` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `testgrouptype_id` INT NOT NULL,
   `task_id` INT NOT NULL,
@@ -58,23 +58,23 @@ CREATE TABLE IF NOT EXISTS `mydb`.`testgroup` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   CONSTRAINT `fk_testgroup_testgrouptype`
     FOREIGN KEY (`testgrouptype_id`)
-    REFERENCES `mydb`.`testgrouptype` (`id`)
+    REFERENCES `grader`.`testgrouptype` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_testgroup_task1`
     FOREIGN KEY (`task_id`)
-    REFERENCES `mydb`.`task` (`id`)
+    REFERENCES `grader`.`task` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`testcase`
+-- Table `grader`.`testcase`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`testcase` ;
+DROP TABLE IF EXISTS `grader`.`testcase` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`testcase` (
+CREATE TABLE IF NOT EXISTS `grader`.`testcase` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `input` MEDIUMTEXT NULL,
   `output` MEDIUMTEXT NULL,
@@ -84,18 +84,18 @@ CREATE TABLE IF NOT EXISTS `mydb`.`testcase` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   CONSTRAINT `fk_testcase_testgroup1`
     FOREIGN KEY (`testgroup_id`)
-    REFERENCES `mydb`.`testgroup` (`id`)
+    REFERENCES `grader`.`testgroup` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`user`
+-- Table `grader`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`user` ;
+DROP TABLE IF EXISTS `grader`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`user` (
+CREATE TABLE IF NOT EXISTS `grader`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) NULL,
   `email` VARCHAR(255) NULL,
@@ -105,11 +105,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`status`
+-- Table `grader`.`status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`status` ;
+DROP TABLE IF EXISTS `grader`.`status` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`status` (
+CREATE TABLE IF NOT EXISTS `grader`.`status` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
@@ -119,11 +119,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`submission`
+-- Table `grader`.`submission`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`submission` ;
+DROP TABLE IF EXISTS `grader`.`submission` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`submission` (
+CREATE TABLE IF NOT EXISTS `grader`.`submission` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `compilation` INT NOT NULL,
   `user_id` INT NOT NULL,
@@ -136,28 +136,28 @@ CREATE TABLE IF NOT EXISTS `mydb`.`submission` (
   INDEX `fk_submission_task1_idx` (`task_id` ASC) VISIBLE,
   CONSTRAINT `fk_submission_status1`
     FOREIGN KEY (`compilation`)
-    REFERENCES `mydb`.`status` (`id`)
+    REFERENCES `grader`.`status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_submission_user1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `mydb`.`user` (`id`)
+    REFERENCES `grader`.`user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_submission_task1`
     FOREIGN KEY (`task_id`)
-    REFERENCES `mydb`.`task` (`id`)
+    REFERENCES `grader`.`task` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`testcase_status`
+-- Table `grader`.`testcase_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`testcase_status` ;
+DROP TABLE IF EXISTS `grader`.`testcase_status` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`testcase_status` (
+CREATE TABLE IF NOT EXISTS `grader`.`testcase_status` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `status_id` INT NOT NULL,
   `testcase_id` INT NOT NULL,
@@ -168,17 +168,53 @@ CREATE TABLE IF NOT EXISTS `mydb`.`testcase_status` (
   INDEX `fk_testcase_status_submission1_idx` (`submission_id` ASC) VISIBLE,
   CONSTRAINT `fk_testcase_status_status1`
     FOREIGN KEY (`status_id`)
-    REFERENCES `mydb`.`status` (`id`)
+    REFERENCES `grader`.`status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_testcase_status_testcase1`
     FOREIGN KEY (`testcase_id`)
-    REFERENCES `mydb`.`testcase` (`id`)
+    REFERENCES `grader`.`testcase` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_testcase_status_submission1`
     FOREIGN KEY (`submission_id`)
-    REFERENCES `mydb`.`submission` (`id`)
+    REFERENCES `grader`.`submission` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `grader`.`role`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `grader`.`role` ;
+
+CREATE TABLE IF NOT EXISTS `grader`.`role` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `role` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `grader`.`user_has_role`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `grader`.`user_has_role` ;
+
+CREATE TABLE IF NOT EXISTS `grader`.`user_has_role` (
+  `user_id` INT NOT NULL,
+  `role_id` INT NOT NULL,
+  PRIMARY KEY (`user_id`, `role_id`),
+  INDEX `fk_user_has_role_role1_idx` (`role_id` ASC) VISIBLE,
+  INDEX `fk_user_has_role_user1_idx` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `fk_user_has_role_user1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `grader`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_has_role_role1`
+    FOREIGN KEY (`role_id`)
+    REFERENCES `grader`.`role` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
