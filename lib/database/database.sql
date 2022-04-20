@@ -22,10 +22,11 @@ DROP TABLE IF EXISTS `grader`.`task` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`task` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL,
-  `statement` TEXT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `statement` MEDIUMTEXT NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`testgroup` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `testgrouptype_id` INT NOT NULL,
   `task_id` INT NOT NULL,
+  `points` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_testgroup_testgrouptype_idx` (`testgrouptype_id` ASC) VISIBLE,
   INDEX `fk_testgroup_task1_idx` (`task_id` ASC) VISIBLE,
@@ -102,7 +104,8 @@ CREATE TABLE IF NOT EXISTS `grader`.`user` (
   `password` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE)
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -127,17 +130,19 @@ DROP TABLE IF EXISTS `grader`.`submission` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`submission` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `compilation` INT NOT NULL,
   `user_id` INT NOT NULL,
-  `code` MEDIUMTEXT NOT NULL,
   `task_id` INT NOT NULL,
+  `compilation_status` INT NOT NULL,
+  `compilation_text` TEXT NOT NULL,
+  `code` MEDIUMTEXT NOT NULL,
+  `score` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_submission_status1_idx` (`compilation` ASC) VISIBLE,
+  INDEX `fk_submission_status1_idx` (`compilation_status` ASC) VISIBLE,
   INDEX `fk_submission_user1_idx` (`user_id` ASC) VISIBLE,
   INDEX `fk_submission_task1_idx` (`task_id` ASC) VISIBLE,
   CONSTRAINT `fk_submission_status1`
-    FOREIGN KEY (`compilation`)
+    FOREIGN KEY (`compilation_status`)
     REFERENCES `grader`.`status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -164,6 +169,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`testcase_status` (
   `status_id` INT NOT NULL,
   `testcase_id` INT NOT NULL,
   `submission_id` INT NOT NULL,
+  `output` MEDIUMTEXT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_testcase_status_status1_idx` (`status_id` ASC) VISIBLE,
   INDEX `fk_testcase_status_testcase1_idx` (`testcase_id` ASC) VISIBLE,
@@ -212,6 +218,8 @@ CREATE TABLE IF NOT EXISTS `grader`.`user_has_role` (
   PRIMARY KEY (`user_id`, `role_id`),
   INDEX `fk_user_has_role_role1_idx` (`role_id` ASC) VISIBLE,
   INDEX `fk_user_has_role_user1_idx` (`user_id` ASC) VISIBLE,
+  UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC) VISIBLE,
+  UNIQUE INDEX `role_id_UNIQUE` (`role_id` ASC) VISIBLE,
   CONSTRAINT `fk_user_has_role_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `grader`.`user` (`id`)
