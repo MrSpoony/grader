@@ -23,10 +23,7 @@ export default async function handler(req, res) {
         path = path.trim() + "/submission.cpp";
         let compilation = 1;
         try {
-            const { stdout, stderr } = await exec("g++ " + gppflags + " " + path + " -o " + file);
-            console.log(stdout.trim() + " <== Stdout trimmed");
-            console.log(stdout + " <== Stdout");
-            console.log(stderr + " <== Stderr");
+            const { stderr } = await exec("g++ " + gppflags + " " + path + " -o " + file);
             if (stderr.trim() !== "") compilation = 2;
         } catch (e) {
             compilation = 3;
