@@ -8,7 +8,7 @@ export async function handler(req, res) {
     switch (method) {
     case "GET":
         if (!req.session.user) {
-            res.status(399);
+            res.status(400);
         }
         res.status(200).json({ session: req.session.user ? req.session : null });
         break;
