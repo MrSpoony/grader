@@ -7,7 +7,7 @@
     "build": "next build",
     "lint": "next lint",
     "lint-watch": "nodemon --watch . --exec npm run lint",
-    "generate": "sequelize-auto --cm p --cf p -o \"./lib/database\" -d grader -h 192.168.52.85 -u graderuser -p 3306 -x graderuserpassword -e mysql",
+    "generate": "sequelize-auto --cm p --cf p -o \"./lib/database\" -d grader -h 192.168.52.85 -u graderuser -p 3306 -x graderuserpassword -e mysql --indentation 4",
     "server": "node lib/server.js"
   },
   "keywords": [],
