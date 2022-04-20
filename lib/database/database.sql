@@ -36,7 +36,7 @@ DROP TABLE IF EXISTS `grader`.`testgrouptype` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`testgrouptype` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `type` VARCHAR(255) NULL,
+  `type` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `type_UNIQUE` (`type` ASC) VISIBLE)
@@ -76,8 +76,8 @@ DROP TABLE IF EXISTS `grader`.`testcase` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`testcase` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `input` MEDIUMTEXT NULL,
-  `output` MEDIUMTEXT NULL,
+  `input` MEDIUMTEXT NOT NULL,
+  `output` MEDIUMTEXT NOT NULL,
   `testgroup_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_testcase_testgroup1_idx` (`testgroup_id` ASC) VISIBLE,
@@ -97,10 +97,12 @@ DROP TABLE IF EXISTS `grader`.`user` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(255) NULL,
-  `email` VARCHAR(255) NULL,
-  `password` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`))
+  `username` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -111,7 +113,7 @@ DROP TABLE IF EXISTS `grader`.`status` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`status` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `status` VARCHAR(255) NULL,
+  `status` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `status_UNIQUE` (`status` ASC) VISIBLE)
@@ -127,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`submission` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `compilation` INT NOT NULL,
   `user_id` INT NOT NULL,
-  `code` MEDIUMTEXT NULL,
+  `code` MEDIUMTEXT NOT NULL,
   `task_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
@@ -166,6 +168,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`testcase_status` (
   INDEX `fk_testcase_status_status1_idx` (`status_id` ASC) VISIBLE,
   INDEX `fk_testcase_status_testcase1_idx` (`testcase_id` ASC) VISIBLE,
   INDEX `fk_testcase_status_submission1_idx` (`submission_id` ASC) VISIBLE,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   CONSTRAINT `fk_testcase_status_status1`
     FOREIGN KEY (`status_id`)
     REFERENCES `grader`.`status` (`id`)
@@ -191,8 +194,10 @@ DROP TABLE IF EXISTS `grader`.`role` ;
 
 CREATE TABLE IF NOT EXISTS `grader`.`role` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`))
+  `role` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `role_UNIQUE` (`role` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
