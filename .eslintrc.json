@@ -21,7 +21,7 @@
     "rules": {
         "react/prop-types": 0,
         "indent": [
-            "error",
+            "warn",
             4
         ],
         "linebreak-style": [
@@ -29,11 +29,11 @@
             "unix"
         ],
         "quotes": [
-            "error",
+            "warn",
             "double"
         ],
         "semi": [
-            "error",
+            "warn",
             "always"
         ]
     }
