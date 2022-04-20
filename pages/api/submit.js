@@ -58,8 +58,6 @@ const evaluateSubmission = async (task_id, submission_id, file) => {
                 const cmd = await exec(command);
                 stdout = cmd.stdout;
                 stderr = cmd.stderr;
-                // console.log(stdout.trim() + " <== Stdout trimmed");
-                // console.log(stderr + " <== Stderr");
                 if (stderr.trim() !== "") {
                     break;
                 }

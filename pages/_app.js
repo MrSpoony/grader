@@ -1,5 +1,5 @@
 // import useSession from "@lib/session"
-import "./_app.css"
+import "./_app.css";
 
 export default function App({ Component, pageProps }) {
     // const session = useSession()
@@ -13,5 +13,5 @@ export default function App({ Component, pageProps }) {
                 <Component {...newPageProps} />
             </main>
         </>
-    )
+    );
 }
