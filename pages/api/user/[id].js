@@ -1,7 +1,25 @@
 const models = require("@lib/server");
 const { User, Submission, Role } = models.default;
+import config from "@lib/sessionConfig";
+import { withIronSessionApiRoute } from "iron-session/next";
 
-export default async function handler(req, res) {
+export default withIronSessionApiRoute(handler, config);
+
+
+export  async function handler(req, res) {
+    if (req.session === undefined) {
+        res.status(401).json({ message: "Unauthorized"});
+        return;
+    }
+    if (req.session.user === undefined) {
+        res.status(401).json({ message: "Unauthorized"});
+        return;
+    }
+    if (req.session.user.id !== id ||
+        !req.sesssion.user.roles.find(role => role.role === "admin")) {
+        res.status(401).json({ message: "Unauthorized"});
+        return;
+    }
     const {
         query: { id },
         method
