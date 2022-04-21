@@ -7,7 +7,13 @@ export default withIronSessionApiRoute(handler, config);
 
 const fs = require("fs");
 const models = require("@lib/server");
-const { Submission, Task, Testgroup, Testcase, TestcaseStatus } = models.default;
+const {
+    Submission,
+    Task,
+    Testgroup,
+    Testcase,
+    TestcaseStatus
+} = models.default;
 
 const gppflags = "";
 
@@ -86,7 +92,13 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         stdout = cmd.stdout;
         stderr = cmd.stderr;
         if (stderr.trim() !== "") {
-            return false;
+            console.log("RE");
+            await TestcaseStatus.create({
+                status_id: 4,
+                testcase_id: testcase.id,
+                submission_id
+            });
+            return 4;
         }
     } catch (e) {
         console.log("RE");
@@ -95,7 +107,7 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
             testcase_id: testcase.id,
             submission_id
         });
-        return false;
+        return 4;
     }
     if (stdout.trim() !== testcase.output.trim()) {
         console.log("Actual: " + stdout.trim());
@@ -106,7 +118,7 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
             testcase_id: testcase.id,
             submission_id
         });
-        return false;
+        return 5;
     }
     console.log("Success");
     await TestcaseStatus.create({
@@ -114,11 +126,11 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         testcase_id: testcase.id,
         submission_id
     });
-    return true;
+    return 5;
 };
 
 
-const evaluateTestggroup = async (testgroup, file, submission_id) => {
+const evaluateTestgroup = async (testgroup, file, submission_id) => {
     const realTestgroup = await Testgroup.findOne({
         include: [
             { model: Testcase, as: "testcases" }
@@ -127,7 +139,9 @@ const evaluateTestggroup = async (testgroup, file, submission_id) => {
     let numberOfRights = 0;
     for (let testcase of realTestgroup["testcases"]) {
         const result = evaluateTestcase(testcase, file, submission_id);
-        if (!result) break;
+        if (result !== 1) {
+            return result;
+        }
         numberOfRights++;
     }
     if (numberOfRights != realTestgroup["testcases"].length) return false;
@@ -141,10 +155,15 @@ const evaluateSubmission = async (task_id, submission, file) => {
             { model: Testgroup, as: "testgroups" },
         ], where: { id: task_id }
     });
+    submission.verdict = 1;
     submission.score = 0;
     for (let testgroup of task["testgroups"]) {
-        const result = evaluateTestggroup(testgroup, file, submission.id);
-        if (result) submission.score += testgroup.points;
+        const result = evaluateTestgroup(testgroup, file, submission.id);
+        if (result !== 1) {
+            submission.verdict = result;
+        } else {
+            submission.score += testgroup.points;
+        }
     }
     submission.save();
 };
