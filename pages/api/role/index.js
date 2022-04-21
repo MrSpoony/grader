@@ -1,5 +1,5 @@
 const models = require("@lib/server");
-const { Role, User } = models.default;
+const { Role } = models.default;
 import config from "@lib/sessionConfig";
 import { withIronSessionApiRoute } from "iron-session/next";
 
@@ -12,7 +12,7 @@ export async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await Role.findAll({ include: [{model: User, as: "user_id_users"}]}));
+        res.status(200).json(await Role.findAll());
         break;
     case "POST":
         res.status(200).json(await Role.create({ role }));

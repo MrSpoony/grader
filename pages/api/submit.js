@@ -16,7 +16,8 @@ export default withIronSessionApiRoute(handler, config);
 
 const writeCodeInFile = util.promisify(fs.writeFile);
 
-const gppflags = "";
+// eslint-disable-next-line max-len
+const gppflags = "-Wall -Wextra -fdiagnostics-color=never -Wno-sign-compare -std=c++20 -O2 -static";
 
 export async function handler(req, res) {
     if (!req.session || !req.session.user) {
@@ -42,7 +43,8 @@ export async function handler(req, res) {
         try {
             const {
                 stderr: compilationText
-            } = await exec("g++ " + gppflags + " " + source + " -o " + executable);
+            // eslint-disable-next-line max-len
+            } = await exec("g++-10 " + gppflags + " " + source + " -o " + executable);
             if (compilationText.trim() !== "") compilationStatus = 2;
         } catch (e) {
             compilationStatus = 3;

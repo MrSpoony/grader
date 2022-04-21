@@ -12,9 +12,7 @@ export async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await Role.findByPk(id, {
-            include: [{model: User, as: "user_id_users"}]
-        }));
+        res.status(200).json(await Role.findByPk(id));
         break;
     case "DELETE":
         res.status(200).json(await Role.destroy({ where: { id }}));

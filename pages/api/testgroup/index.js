@@ -12,12 +12,7 @@ export async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await Testgroup.findAll({
-            include: [
-                { model: Task, as: "task" },
-                { model: Testgrouptype, as: "testgrouptype"}
-            ]
-        }));
+        res.status(200).json(await Testgroup.findAll());
         break;
     case "POST": {
         if (!req.session ||
