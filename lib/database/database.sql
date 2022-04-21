@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`testgroup` (
   `testgrouptype_id` INT NOT NULL,
   `task_id` INT NOT NULL,
   `points` INT NOT NULL,
+  `limits` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_testgroup_testgrouptype_idx` (`testgrouptype_id` ASC) VISIBLE,
   INDEX `fk_testgroup_task1_idx` (`task_id` ASC) VISIBLE,
@@ -136,11 +137,13 @@ CREATE TABLE IF NOT EXISTS `grader`.`submission` (
   `compilation_text` TEXT NOT NULL,
   `code` MEDIUMTEXT NOT NULL,
   `score` INT NOT NULL,
+  `verdict` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   INDEX `fk_submission_status1_idx` (`compilation_status` ASC) VISIBLE,
   INDEX `fk_submission_user1_idx` (`user_id` ASC) VISIBLE,
   INDEX `fk_submission_task1_idx` (`task_id` ASC) VISIBLE,
+  INDEX `fk_submission_status2_idx` (`verdict` ASC) VISIBLE,
   CONSTRAINT `fk_submission_status1`
     FOREIGN KEY (`compilation_status`)
     REFERENCES `grader`.`status` (`id`)
@@ -154,6 +157,11 @@ CREATE TABLE IF NOT EXISTS `grader`.`submission` (
   CONSTRAINT `fk_submission_task1`
     FOREIGN KEY (`task_id`)
     REFERENCES `grader`.`task` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_submission_status2`
+    FOREIGN KEY (`verdict`)
+    REFERENCES `grader`.`status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
