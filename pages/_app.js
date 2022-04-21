@@ -1,6 +1,6 @@
-import useData from "@lib/hooks/useData"
-
 import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import useData from "@lib/hooks/useData";
 
 export default function App({ Component, pageProps }) {
     const [session, setSession] = useState({});
@@ -23,11 +23,7 @@ export default function App({ Component, pageProps }) {
 
     return (
         <>
-            <main className="page">
-                <h1>Data:</h1>
-                <pre>{JSON.stringify(newPageProps.data, null, 2)}</pre>
-                <h1>Session:</h1>
-                <pre>{JSON.stringify(session, null, 2)}</pre>
+            <main>
                 <Component {...newPageProps} />
             </main>
         </>
