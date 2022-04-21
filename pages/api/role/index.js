@@ -1,8 +1,11 @@
 const models = require("@lib/server");
 const { Role, User } = models.default;
+import config from "@lib/sessionConfig";
+import { withIronSessionApiRoute } from "iron-session/next";
 
+export default withIronSessionApiRoute(handler, config);
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
     const {
         body: { role },
         method,

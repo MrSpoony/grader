@@ -1,5 +1,4 @@
 import config from "@lib/sessionConfig";
-const util = require("util");
 const { Op } = require("sequelize");
 import { withIronSessionApiRoute } from "iron-session/next";
 const bcrypt = require("bcrypt");
@@ -29,14 +28,31 @@ export async function handler(req, res) {
         if (user !== null) res.status(400).json({ message: "Username already in use!"});
         user = await User.findOne( { where: { email } });
         if (user !== null) res.status(401).json({ message: "Email already in use!"});
-        const rolesWithId = await Role.findAll( {
-            where: {
-                role: {
-                    [Op.in]: roles
+        let rolesWithId;
+        if (req.session &&
+                req.session.user &&
+                req.session.roles.find(role => role.role === "admin")) {
+            rolesWithId = await Role.findAll( {
+                where: {
+                    role: {
+                        [Op.in]: roles
+                    }
                 }
-            }
-        });
-
+            });
+        } else if (req.session &&
+                req.session.user &&
+                req.session.roles.find(role => role.role === "leader")) {
+            const rolesToAdd = roles.filter(role => role !== "admin");
+            rolesWithId = await Role.findAll( {
+                where: {
+                    role: {
+                        [Op.in]: rolesToAdd
+                    }
+                }
+            });
+        } else {
+            rolesWithId = [2];
+        }
         const hash = await hashPassword(password, 10);
         const newUser = await User.create({ username, email, password: hash});
         newUser.addRole_id_roles(rolesWithId);

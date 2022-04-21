@@ -3,19 +3,15 @@ const { Testgroup, Testgrouptype } = models.default;
 
 
 export default async function handler(req, res) {
-    const {
-        body: { type },
-        method,
-    } = req;
+    const { method } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await Testgrouptype.findAll({ include: [{ model: Testgroup, as: "testgroups" }] }));
-        break;
-    case "POST":
-        res.status(200).json(await Testgrouptype.create({ type }));
+        res.status(200).json(await Testgrouptype.findAll({
+            include: [{ model: Testgroup, as: "testgroups" }]
+        }));
         break;
     default:
-        res.setHeader("Allow", ["GET", "POST"]);
+        res.setHeader("Allow", ["GET"]);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
 }

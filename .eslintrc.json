@@ -35,6 +35,13 @@
         "semi": [
             "warn",
             "always"
+        ],
+        "max-len": [
+            "warn",
+            {
+                "code": 80,
+                "tabWidth": 4
+            }
         ]
     }
 }

@@ -6,24 +6,18 @@ import { withIronSessionApiRoute } from "iron-session/next";
 export default withIronSessionApiRoute(handler, config);
 
 
-export  async function handler(req, res) {
-    if (req.session === undefined) {
-        res.status(401).json({ message: "Unauthorized"});
-        return;
-    }
-    if (req.session.user === undefined) {
-        res.status(401).json({ message: "Unauthorized"});
-        return;
-    }
-    if (req.session.user.id !== id ||
-        !req.sesssion.user.roles.find(role => role.role === "admin")) {
-        res.status(401).json({ message: "Unauthorized"});
-        return;
-    }
+export async function handler(req, res) {
     const {
         query: { id },
         method
     } = req;
+    if (!req.session || 
+        !req.session.user ||
+        (req.session.user.id !== id &&
+        !req.sesssion.user.roles.find(role => role.role === "admin"))) {
+        res.status(401).json({ message: "Unauthorized"});
+        return;
+    }
     switch (method) {
     case "GET":
         res.status(200).json(await User.findByPk(id, { include: [

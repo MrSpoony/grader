@@ -6,15 +6,9 @@ import { withIronSessionApiRoute } from "iron-session/next";
 export default withIronSessionApiRoute(handler, config);
 
 export async function handler(req, res) {
-    if (req.session === undefined) {
-        res.status(401).json({ message: "Unauthorized"});
-        return;
-    }
-    if (req.session.user === undefined) {
-        res.status(401).json({ message: "Unauthorized"});
-        return;
-    }
-    if (!req.session.user.roles.filter(role => role.role === "admin")) {
+    if (!req.session ||
+        !req.session.user ||
+        !req.session.user.roles.filter(role => role.role === "admin")) {
         res.status(401).json({ message: "Unauthorized"});
         return;
     }

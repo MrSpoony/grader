@@ -12,11 +12,7 @@ const { Submission, Task, Testgroup, Testcase, TestcaseStatus } = models.default
 const gppflags = "";
 
 export async function handler(req, res) {
-    if (req.session === undefined) {
-        res.status(401).json({ message: "Unauthorized" });
-        return;
-    }
-    if (req.session.user === undefined) {
+    if (!req.session || !req.session.user) {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }
@@ -94,7 +90,7 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         }
     } catch (e) {
         console.log("RE");
-        TestcaseStatus.create({
+        await TestcaseStatus.create({
             status_id: 4,
             testcase_id: testcase.id,
             submission_id
@@ -105,7 +101,7 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         console.log("Actual: " + stdout.trim());
         console.log("WA");
         console.log("Expected: " + testcase.output.trim());
-        TestcaseStatus.create({
+        await TestcaseStatus.create({
             status_id: 5,
             testcase_id: testcase.id,
             submission_id
@@ -113,7 +109,7 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         return false;
     }
     console.log("Success");
-    TestcaseStatus.create({
+    await TestcaseStatus.create({
         status_id: 1,
         testcase_id: testcase.id,
         submission_id

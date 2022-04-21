@@ -1,7 +1,19 @@
 const models = require("@lib/server");
 const { Testcase } = models.default;
+import config from "@lib/sessionConfig";
+import { withIronSessionApiRoute } from "iron-session/next";
 
-export default async function handler(req, res) {
+export default withIronSessionApiRoute(handler, config);
+
+export async function handler(req, res) {
+    if (!req.session ||
+        !req.session.user ||
+        !req.sessino.user.roles.find(role => {
+            return role.role === "admin" || role.role === "leader";
+        })) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
     const {
         query: { id },
         method

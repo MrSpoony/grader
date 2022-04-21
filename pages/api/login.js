@@ -14,7 +14,7 @@ export async function handler(req, res) {
     switch (method) {
     case "POST": {
         let user = await User.findOne( { where: { username }, include: [{ model: Role, as: "role_id_roles" }]});
-        if (user === null) User.findOne( { where: { email }, include: [{ model: Role, as: "role_id_roles" }]}); 
+        if (user === null) user = await User.findOne( { where: { email }, include: [{ model: Role, as: "role_id_roles" }]}); 
         if (user === null) {
             res.status(404).json({ message: "User not found!"});
             return;
