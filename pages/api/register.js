@@ -25,12 +25,17 @@ export async function handler(req, res) {
     switch (method) {
     case "POST": {
         let user = await User.findOne( { where: { username } });
-        if (user !== null) res.status(400).json({ message: "Username already in use!"});
+        if (user !== null) res.status(400).json({
+            message: "Username already in use!"
+        });
         user = await User.findOne( { where: { email } });
-        if (user !== null) res.status(401).json({ message: "Email already in use!"});
+        if (user !== null) res.status(401).json({
+            message: "Email already in use!"
+        });
         let rolesWithId;
         if (req.session &&
                 req.session.user &&
+                req.session.roles &&
                 req.session.roles.find(role => role.role === "admin")) {
             rolesWithId = await Role.findAll( {
                 where: {
@@ -41,6 +46,7 @@ export async function handler(req, res) {
             });
         } else if (req.session &&
                 req.session.user &&
+                req.session.roles &&
                 req.session.roles.find(role => role.role === "leader")) {
             const rolesToAdd = roles.filter(role => role !== "admin");
             rolesWithId = await Role.findAll( {
@@ -51,7 +57,7 @@ export async function handler(req, res) {
                 }
             });
         } else {
-            rolesWithId = [2];
+            rolesWithId = [3];
         }
         const hash = await hashPassword(password, 10);
         const newUser = await User.create({ username, email, password: hash});

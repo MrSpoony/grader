@@ -1,10 +1,7 @@
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 import config from "@lib/sessionConfig";
-import { withIronSessionApiRoute } from "iron-session/next";
-
-export default withIronSessionApiRoute(handler, config);
-
+const { withIronSessionApiRoute } = require("iron-session/next");
 const fs = require("fs");
 const models = require("@lib/server");
 const {
@@ -14,6 +11,10 @@ const {
     Testcase,
     TestcaseStatus
 } = models.default;
+
+export default withIronSessionApiRoute(handler, config);
+
+const writeCodeInFile = util.promisify(fs.writeFile);
 
 const gppflags = "";
 
@@ -28,22 +29,11 @@ export async function handler(req, res) {
         method,
     } = req;
     if (method === "POST") {
-        fs.writeFile("submission.cpp", "", err => {
-            if (err) res.status(500).json({
-                message: err ||
-                    "Something went wrong while storing the file"
-            });
-            return;
-        });
-        fs.writeFile("submission.cpp", code, err => {
-            if (err) {
-                res.status(500).json({
-                    message: err ||
-                        "Something went wrong while storing the file"
-                });
-                return;
-            }
-        });
+        try {
+            await writeCodeInFile("submission.cpp", code);
+        } catch (e) {
+            res.status(500).json({message: e.message});
+        }
         let { stdout: cwd } = await exec("pwd");
         const executable = cwd.trim() + "/submission";
         const source = cwd.trim() + "/submission.cpp";
@@ -65,14 +55,14 @@ export async function handler(req, res) {
                 compilation_status: compilationStatus,
                 compilation_text: compilationText,
                 code,
+                verdict: 8,
                 score: 0
             });
             res.status(200).json(submission);
             await evaluateSubmission(task_id, submission, executable);
         } catch (e) {
             res.status(500).json({
-                message: e ||
-                    "Something went wrong while creating the submission"
+                message: e.message
             });
         }
     } else {
@@ -126,7 +116,7 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         testcase_id: testcase.id,
         submission_id
     });
-    return 5;
+    return 1;
 };
 
 
@@ -138,14 +128,14 @@ const evaluateTestgroup = async (testgroup, file, submission_id) => {
     });
     let numberOfRights = 0;
     for (let testcase of realTestgroup["testcases"]) {
-        const result = evaluateTestcase(testcase, file, submission_id);
+        const result = await evaluateTestcase(testcase, file, submission_id);
         if (result !== 1) {
             return result;
         }
         numberOfRights++;
     }
-    if (numberOfRights != realTestgroup["testcases"].length) return false;
-    else return true;
+    if (numberOfRights != realTestgroup["testcases"].length) return 5;
+    else return 1;
 };
 
 
@@ -158,7 +148,7 @@ const evaluateSubmission = async (task_id, submission, file) => {
     submission.verdict = 1;
     submission.score = 0;
     for (let testgroup of task["testgroups"]) {
-        const result = evaluateTestgroup(testgroup, file, submission.id);
+        const result = await evaluateTestgroup(testgroup, file, submission.id);
         if (result !== 1) {
             submission.verdict = result;
         } else {

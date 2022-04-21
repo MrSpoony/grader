@@ -10,14 +10,18 @@ export async function handler(req, res) {
         query: { id },
         method
     } = req;
-    const submission = Submission.findByPk(id);
+    const submission = await Submission.findByPk(id);
+    if (!submission) {
+        res.status(404).json({message: "Submission not found" });
+        return;
+    }
     if (!req.session ||
-        !req.session.user ||
+        !req.session.user||
         (req.session.user.id !== submission.user_id &&
         !req.session.user.roles.find(role => {
             return role.role === "admin" || role.role === "leader";
         }))) {
-        res.status(200).json({ message: "Unauthorized" });
+        res.status(401).json({ message: "Unauthorized" });
         return;
     }
     switch (method) {
@@ -25,6 +29,12 @@ export async function handler(req, res) {
         res.status(200).json(await Submission.findByPk(id));
         break;
     case "DELETE":
+        if (!req.session.user.roles.find(role => {
+            return role.role === "admin" || role.role === "leader";
+        })) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         res.status(200).json(await Submission.destroy({ where: { id }}));
         break;
     case "PUT":

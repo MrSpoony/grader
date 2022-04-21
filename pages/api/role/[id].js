@@ -1,6 +1,6 @@
 const models = require("@lib/server");
 const { Role, User } = models.default;
-import config from "@lib/sessionConfig";
+const config = require("@lib/sessionConfig");
 import { withIronSessionApiRoute } from "iron-session/next";
 
 export default withIronSessionApiRoute(handler, config);
@@ -12,7 +12,9 @@ export async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET":
-        res.status(200).json(await Role.findByPk(id, { include: [{model: User, as: "user_id_users"}]}));
+        res.status(200).json(await Role.findByPk(id, {
+            include: [{model: User, as: "user_id_users"}]
+        }));
         break;
     case "DELETE":
         res.status(200).json(await Role.destroy({ where: { id }}));
