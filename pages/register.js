@@ -55,8 +55,8 @@ export default function LoginPage() {
             return;
 
         }
-        router.push("/login");
         setIsLoading(false);
+        router.push("/login");
     };
 
     const handleChange = (e) => {
