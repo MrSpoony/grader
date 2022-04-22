@@ -1,5 +1,5 @@
 const models = require("@lib/server");
-const { User } = models.default;
+const { Testgroup, Testcase } = models.default;
 import config from "@lib/sessionConfig";
 import { withIronSessionApiRoute } from "iron-session/next";
 
@@ -22,16 +22,27 @@ export async function handler(req, res) {
         method
     } = req;
     switch (method) {
-    case "GET":
-        res.status(200).json(await User.findByPk(id));
+    case "GET": {
+        const testgroup = await Testgroup.findByPk(id);
+        if (testgroup.testgrouptype_id === 1) {
+            console.log("something");
+            res.status(200).json(await Testgroup.findByPk(id, {
+                include: [
+                    { model: Testcase, as: "testcases" }
+                ]
+            }));
+            return;
+        }
+        res.status(200).json(testgroup);
+    }
         break;
     case "DELETE":
         if (!handleUnauthorized()) return;
-        res.status(200).json(await User.destroy({ where: { id }}));
+        res.status(200).json(await Testgroup.destroy({ where: { id }}));
         break;
     case "PUT":
         if (!handleUnauthorized()) return;
-        res.status(200).json(await User.update(req.body, { where: { id } }));
+        res.status(200).json(await Testgroup.update(req.body, { where: { id } }));
         break;
     default:
         res.setHeader("Allow", ["GET", "DELETE", "PUT"]);
