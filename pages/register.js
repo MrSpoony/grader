@@ -62,7 +62,7 @@ export default function LoginPage() {
     const handleChange = (e) => {
         const name = e.target.name;
         let value = e.target.value;
-        if (!name.contains("password")) value = value.trim();
+        if (!name.includes("password")) value = value.trim();
         setUser({
             ...user,
             [name]: value,
