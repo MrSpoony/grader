@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 
 export default function LoginPage({ session }) {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [login, setLogin] = useState({});
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,10 +31,10 @@ export default function LoginPage({ session }) {
             setIsLoading(false);
             return;
         }
-        const data = await response.json();
-        console.log(data);
-        session = data.session;
+        await response.json();
+        await session.reloadSession();
         setIsLoading(false);
+        router.push("/");
     };
 
     const handleChange = (e) => {
