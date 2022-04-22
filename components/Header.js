@@ -9,8 +9,6 @@ import React from "react";
 
 export default function Header({ session }) {
 
-    console.log(session);
-
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
@@ -35,7 +33,7 @@ export default function Header({ session }) {
                         </Link>
                     </Nav>
                     {
-                        session.user ?
+                        (session && session.user) ?
                             <NavDropdown
                                 title={session.user.username}
                                 id="navbarScrollingDropdown"
@@ -47,7 +45,6 @@ export default function Header({ session }) {
                                 <NavDropdown.Item href="/logout">
                                     Logout
                                 </NavDropdown.Item>
-                                <NavDropdown.Divider />
                             </NavDropdown>
                             :
                             <Link href="login" passHref>
