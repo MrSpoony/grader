@@ -23,9 +23,6 @@ export default function TaskDetailPage({ data }) {
     useEffect(() => {
         if (!data.testgrouptypes || !task?.testgroups) return;
         const sampleTestgroup = task.testgroups.find(tg => {
-            // const sampleTypeId = data.testgrouptypes.find(tgt => {
-            //     return tgt.type === "sample";
-            // });
             console.log(tg);
             return tg.testgrouptype_id === 1;
         });
@@ -63,7 +60,7 @@ export default function TaskDetailPage({ data }) {
                             return (
                                 <div key={sc.id} >
                                     <h5>Sample.{String(i).padStart(2, "0")}</h5>
-                                    <Row>
+                                    <Row className="mb-4">
                                         <Col className="border">
                                             <h6 className="mt-3">
                                                     Input:
@@ -81,7 +78,6 @@ export default function TaskDetailPage({ data }) {
                                             </pre>
                                         </Col>
                                     </Row>
-                                    <pre>{/*JSON.stringify(sc, 2, 2)*/}</pre>
                                 </div>
                             );
                         })
