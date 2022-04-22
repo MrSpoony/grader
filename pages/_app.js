@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "@components/Header";
 import "bootstrap/dist/css/bootstrap.css";
 import useData from "@lib/hooks/useData";
+import useSession from "@lib/hooks/useSession";
 
 export default function App({ Component, pageProps }) {
-    const [session, setSession] = useState({});
     const data = useData();
-
-    useEffect(() => {
-        const fetchSession = async () => {
-            const response = await fetch("/api/session");
-            const data = await response.json();
-            setSession(data.session);
-        };
-        fetchSession();
-    }, []);
+    const session = useSession();
 
     const newPageProps = {
         ...pageProps,
