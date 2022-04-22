@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Header from "@components/Header";
 import "bootstrap/dist/css/bootstrap.css";
 import useData from "@lib/hooks/useData";
 
@@ -10,11 +11,11 @@ export default function App({ Component, pageProps }) {
         const fetchSession = async () => {
             const response = await fetch("/api/session");
             const data = await response.json();
-            setSession(data);
+            setSession(data.session);
         };
         fetchSession();
     }, []);
-    
+
     const newPageProps = {
         ...pageProps,
         data,
@@ -23,6 +24,10 @@ export default function App({ Component, pageProps }) {
 
     return (
         <>
+            <Header session={session}/>
+            <br/>
+            <br/>
+            <br/>
             <main>
                 <Component {...newPageProps} />
             </main>
