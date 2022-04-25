@@ -6,7 +6,13 @@ export default async function handler(req, res) {
     const { method } = req;
     switch (method) {
     case "GET": {
-        const t = await sequelize.transaction();
+        let t;
+        try {
+            t = await sequelize.transaction();
+        } catch (e) {
+            console.log(e.message);
+            return;
+        }
         try {
             const tr = { transaction: t };
             await Role          .create({ role: "admin"}, tr);
@@ -55,7 +61,7 @@ Print a single integer – the length of the longest increasing subsequence.` },
             await Testcase      .create({ testgroup_id: 2,     input: "1 2",                                    output: "3"}, tr);
             await Testcase      .create({ testgroup_id: 2,     input: "4 2",                                    output: "6"}, tr);
             await Testcase      .create({ testgroup_id: 2,     input: "1000000000\n23957899",                   output: "1023957899"}, tr);
-            await Testcase      .create({ testgroup_id: 3,     input: "587584993025834548\n889593788789900299", output: "1477178781815734784"}, tr);
+            await Testcase      .create({ testgroup_id: 3,     input: "587584993025834548\n889593788789900299", output: "1477178781815734847"}, tr);
             await Testcase      .create({ testgroup_id: 3,     input: "700000000000000000\n0",                  output: "700000000000000000"}, tr);
             await Testcase      .create({ testgroup_id: 3,     input: "0\n0",                                   output: "0"}, tr);
             await Testcase      .create({ testgroup_id: 4,     input: "3\n1 3 2",                               output: "2"}, tr);
