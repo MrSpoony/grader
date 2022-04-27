@@ -13,8 +13,6 @@ export default function TaskDetailPage({ data }) {
     useEffect(() => {
         if (!data.tasks) return;
         const task = data.tasks.find(task => {
-            console.log(task.name.replace(/\s+/g, ""));
-            console.log(name);
             return task.name.replace(/\s+/g, "") === name;
         });
         setTask(task);
@@ -23,7 +21,6 @@ export default function TaskDetailPage({ data }) {
     useEffect(() => {
         if (!data.testgrouptypes || !task?.testgroups) return;
         const sampleTestgroup = task.testgroups.find(tg => {
-            console.log(tg);
             return tg.testgrouptype_id === 1;
         });
         const loadSampleCases = async (sampleTestgroup) => {
