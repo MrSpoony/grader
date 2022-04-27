@@ -36,7 +36,7 @@ export async function handler(req, res) {
                 console.log(e.message);
             }
         }
-        if (testgroup.testgrouptype_id !== 1) {
+        if (testgroup?.testgrouptype_id !== 1) {
             try {
 
                 await res.status(200).json(testgroup);

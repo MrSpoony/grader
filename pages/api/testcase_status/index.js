@@ -91,7 +91,7 @@ export async function handler(req, res) {
                     { model: Submission, as: "submission"}
                 ]
             });
-            const everything ={...sampleCases, ...testCases};
+            const everything = {...sampleCases, ...testCases};
             res.status(200).json(everything);
             return;
         }
