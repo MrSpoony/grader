@@ -1,5 +1,11 @@
 const models = require("@lib/server");
-const { Submission } = models.default;
+const {
+    Submission,
+    TestcaseStatus,
+    Testgroup,
+    Task,
+    Testcase
+} = models.default;
 import config from "@lib/sessionConfig";
 import { withIronSessionApiRoute } from "iron-session/next";
 
@@ -15,10 +21,8 @@ export async function handler(req, res) {
         res.status(404).json({message: "Submission not found" });
         return;
     }
-    if (!req.session ||
-        !req.session.user||
-        (req.session.user.id !== submission.user_id &&
-        !req.session.user.roles.find(role => {
+    if ((req.session?.user?.id !== submission.user_id &&
+        !req.session?.user?.roles.find(role => {
             return role.role === "admin" || role.role === "leader";
         }))) {
         res.status(401).json({ message: "Unauthorized" });
@@ -26,7 +30,24 @@ export async function handler(req, res) {
     }
     switch (method) {
     case "GET":
-        res.status(200).json(await Submission.findByPk(id));
+        res.status(200).json(await Submission.findByPk(id, {
+            include: [
+                { 
+                    model: TestcaseStatus, as: "testcase_statuses",
+                    include: [
+                        { model: Testcase, as: "testcase",
+                            attributes: ["testgroup_id"],
+                            include: [
+                                {
+                                    model: Testgroup, as: "testgroup",
+                                }
+                            ]
+                        }
+                    ]
+                },
+                { model: Task, as: "task" },
+            ]
+        }));
         break;
     case "DELETE":
         if (!req.session.user.roles.find(role => {
