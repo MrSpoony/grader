@@ -30,6 +30,16 @@ export async function handler(req, res) {
         method,
     } = req;
     if (method === "POST") {
+        let submission = await Submission.create({
+            user_id: user.id,
+            task_id,
+            compilation_status: 8,
+            compilation_text: "",
+            code,
+            verdict: 8,
+            score: 0
+        });
+        res.status(200).json(submission);
         try {
             await writeCodeInFile("submission.cpp", code);
         } catch (e) {
@@ -43,7 +53,6 @@ export async function handler(req, res) {
         try {
             const {
                 stderr: compilationText
-            // eslint-disable-next-line max-len
             } = await exec("g++-10 " + gppflags + " " + source + " -o " + executable);
             if (compilationText.trim() !== "") {
                 compilationTxt = compilationText.trim();
@@ -54,16 +63,9 @@ export async function handler(req, res) {
             compilationTxt = e.stderr;
         }
         try {
-            const submission = await Submission.create({
-                user_id: user.id,
-                task_id,
-                compilation_status: compilationStatus,
-                compilation_text: compilationTxt.trim(),
-                code,
-                verdict: 8,
-                score: 0
-            });
-            res.status(200).json(submission);
+            submission.compilation_status = compilationStatus;
+            submission.compilation_text = compilationTxt.trim(),
+            await submission.save();
             await evaluateSubmission(task_id, submission, executable);
         } catch (e) {
             res.status(500).json({
@@ -161,5 +163,5 @@ const evaluateSubmission = async (task_id, submission, file) => {
             submission.score += testgroup.points;
         }
     }
-    submission.save();
+    await submission.save();
 };
