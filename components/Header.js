@@ -47,7 +47,7 @@ export default function Header({ session }) {
                                 </NavDropdown.Item>
                             </NavDropdown>
                             :
-                            <Link href="login" passHref>
+                            <Link href="/login" passHref>
                                 <Nav.Link>Login</Nav.Link>
                             </Link>
                     }
