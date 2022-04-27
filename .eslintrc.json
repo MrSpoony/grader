@@ -40,7 +40,8 @@
             "warn",
             {
                 "code": 80,
-                "tabWidth": 4
+                "tabWidth": 4,
+                "ignoreStrings": true
             }
         ]
     }
