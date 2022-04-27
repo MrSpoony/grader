@@ -8,8 +8,9 @@ export default withIronSessionApiRoute(handler, config);
 export async function handler(req, res) {
     const { method } = req;
     switch (method) {
-    case "GET":
+    case "GET": {
         res.status(200).json(await Status.findAll());
+    }
         break;
     default:
         res.setHeader("Allow", ["GET"]);
