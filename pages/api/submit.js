@@ -108,7 +108,8 @@ const evaluateTestcase = async (testcase, file, submission_id) => {
         await TestcaseStatus.create({
             status_id: 5,
             testcase_id: testcase.id,
-            submission_id
+            submission_id,
+            output: stdout.trim()
         });
         return 5;
     }
