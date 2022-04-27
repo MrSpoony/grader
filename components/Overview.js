@@ -4,25 +4,31 @@ import { Table, Badge, } from "react-bootstrap";
 export default function Overview({ submission, statuses, tasks }) {
     const [compilation, setCompilation] = useState("");
     const [sample, setSample] = useState("");
+    const [verdict, setVerdict] = useState("");
 
     useEffect(() => {
         if (!statuses || !submission?.compilation_status) return;
         setCompilation(statuses.find(s => {
-            return (
-                s.id === 
-            submission.compilation_status
-            );
+            return s.id === submission.compilation_status;
         })?.status);
-    }, [statuses, submission?.compilation_status]);
+    }, [submission?.compilation_status, statuses]);
 
     useEffect(() => {
-        // const loadSamples = () => {
-        //     submission.testcase_statuses.find(status => {
-        //         if (status.testcase.testgroup_id);
-        //     });
-        // };
-        // loadSamples();
-    }, [submission?.testcase_statuses]);
+        if (!statuses || !submission.testcase_statuses) return;
+        const testcaseStatus = submission.testcase_statuses?.find(status => {
+            return status.testcase.testgroup.testgrouptype["type"] === "sample";
+        });
+        setSample(statuses.find(s => {
+            return s.id === testcaseStatus.status_id;
+        })?.status);
+    }, [submission?.testcase_statuses, statuses]);
+
+    useEffect(() => {
+        if (!statuses || !submission.verdict) return;
+        setVerdict(statuses.find(s => {
+            return s.id === submission.verdict;
+        })?.status);
+    }, [statuses, submission?.verdict]);
 
 
     if (!submission || !statuses) return (<>Loading</>);
@@ -59,8 +65,23 @@ export default function Overview({ submission, statuses, tasks }) {
                             </td>
                         </tr>
                         <tr>
+                            <th>Sample Cases</th>
                             <td>
-                                <pre>{JSON.stringify(submission, 2, 2)}</pre>
+                                <Badge bg={
+                                    sample === "Success" ? "success" : 
+                                        sample === "Warning" ? "warning" : "danger"}>
+                                    {sample}
+                                </Badge>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Verdict</th>
+                            <td>
+                                <Badge bg={
+                                    verdict === "Success" ? "success" : 
+                                        verdict === "Warning" ? "warning" : "danger"}>
+                                    {verdict}
+                                </Badge>
                             </td>
                         </tr>
                     </>)

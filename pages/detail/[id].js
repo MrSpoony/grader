@@ -1,12 +1,15 @@
 import Overview from "@components/Overview";
+import { useRedirectToLogin } from "@lib/hooks/useSession";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { Alert, Tab, Tabs, Container } from "react-bootstrap";
 
-export default function TaskDetailPage({ data }) {
+export default function TaskDetailPage({ data, session }) {
     const router = useRouter();
     const { id } = router.query;
     const [submission, setSubmission] = useState({});
+
+    useRedirectToLogin(session);
 
     useEffect(() => {
         if (!id) return;

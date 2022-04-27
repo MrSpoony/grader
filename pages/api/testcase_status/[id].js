@@ -50,7 +50,6 @@ export async function handler(req, res) {
                 { model: Status, as: "status"},
                 {
                     model: Testcase, as: "testcase",
-                    attributes: ["testgroup_id"],
                     include: [
                         {
                             model: Testgroup, as: "testgroup",
@@ -82,7 +81,7 @@ export async function handler(req, res) {
                                     model: Testgrouptype,
                                     as: "testgrouptype",
                                     where: {
-                                        type: "real"
+                                        type: "sample"
                                     }
                                 }
                             ]

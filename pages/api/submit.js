@@ -39,23 +39,26 @@ export async function handler(req, res) {
         const executable = cwd.trim() + "/submission";
         const source = cwd.trim() + "/submission.cpp";
         let compilationStatus = 1;
-        let compilationText = "";
+        let compilationTxt = "";
         try {
             const {
                 stderr: compilationText
             // eslint-disable-next-line max-len
             } = await exec("g++-10 " + gppflags + " " + source + " -o " + executable);
-            if (compilationText.trim() !== "") compilationStatus = 2;
+            if (compilationText.trim() !== "") {
+                compilationTxt = compilationText.trim();
+                compilationStatus = 2;
+            }
         } catch (e) {
             compilationStatus = 3;
-            compilationText = e.stderr;
+            compilationTxt = e.stderr;
         }
         try {
             const submission = await Submission.create({
                 user_id: user.id,
                 task_id,
                 compilation_status: compilationStatus,
-                compilation_text: compilationText,
+                compilation_text: compilationTxt.trim(),
                 code,
                 verdict: 8,
                 score: 0
