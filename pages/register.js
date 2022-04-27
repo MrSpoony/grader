@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Container, Form, Button, Alert } from "react-bootstrap";
+import { useRedirectToHome } from "@lib/hooks/useSession";
 
 const validateUser = (user) => {
     let errors = {};
@@ -16,11 +17,13 @@ const validateUser = (user) => {
     return [isValid, errors];
 };
 
-export default function LoginPage() {
+export default function LoginPage({ session }) {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState({});
     const router = useRouter();
+    
+    useRedirectToHome(session);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

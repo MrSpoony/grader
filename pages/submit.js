@@ -1,3 +1,4 @@
+import { useRedirectToLogin } from "@lib/hooks/useSession";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { Alert, Container, Form, Button, Row, Col } from "react-bootstrap";
@@ -19,7 +20,7 @@ const validateSubmission = (sub) => {
     return [isRight, error];
 };
 
-export default function SubmitPage({ data }) {
+export default function SubmitPage({ session, data }) {
     const router = useRouter();
     const [hasFile, setHasFile] = useState(false);
     const [submission, setSubmission] = useState(null);
@@ -27,8 +28,9 @@ export default function SubmitPage({ data }) {
     const [isLoading, setIsLoading] = useState(false);
     const [tasks, setTasks] = useState([]);
     const [currTask, setCurrTask] = useState(1);
-
     const { task } = router.query;
+
+    useRedirectToLogin(session);
 
     useEffect(() => {
         setSubmission({ code: "", task_id: "1" });
