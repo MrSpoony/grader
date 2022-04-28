@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Badge, Table } from "react-bootstrap";
+import ReactDiffViewer from "react-diff-viewer";
 import Link from "next/link";
 
 
@@ -56,13 +57,16 @@ export default function Source({
     }, [testcaseStatuses, testgrouptypes, task.testgroups]);
 
     useEffect(() => {
-        if (!reals.length) return;
-        let realActives = {};
+        if (!reals.length || !samples.length) return;
+        let realInactives = {};
         Object.entries(reals).forEach(k => {
-            realActives[k[1].id] = true;
+            realInactives[k[1].id] = true;
         });
-        setInactive(realActives);
-    }, [reals]);
+        Object.entries(samples).forEach(k => {
+            realInactives[`S.${k[1].id}`] = true;
+        });
+        setInactive(realInactives);
+    }, [reals, samples]);
 
     useEffect(() => {
         if (!submission?.testcase_statuses ||
@@ -90,6 +94,7 @@ export default function Source({
     const toggleActive = index => {
         let updated = {...inactive};
         updated[index] = !updated[index];
+        console.log(updated);
         setInactive(updated);
     };
 
@@ -109,42 +114,71 @@ export default function Source({
                     <tr>
                         <th>Case</th>
                         <th>Verdict</th>
-                        <th>Diff</th>
+                        <th>More</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                         samples?.map((ts, i) => {
-                            return (<tr key={ts.id}>
-                                <td>Sample.{String(i).padStart(2, "0")}</td>
-                                <td>
-                                    <Badge bg={
-                                        ts.status === "Success" ? "success" :
-                                            ["Warning", "Pending"].includes(ts.status) ? "warning" : "danger"}>
-                                        {ts.status}
-                                    </Badge>
-                                </td>
-                                <td><Link href="#">Diff</Link></td>
-                            </tr>);
+                            return (<>
+                                <tr key={ts.id}>
+                                    <td>Sample.{String(i).padStart(2, "0")}</td>
+                                    <td>
+                                        <Badge bg={
+                                            ts.status === "Success" ? "success" :
+                                                ["Warning", "Pending"].includes(ts.status) ?
+                                                    "warning" :
+                                                    "danger"}>
+                                            {ts.status}
+                                        </Badge>
+                                    </td>
+                                    <td onClick={() => {
+                                        toggleActive(`S.${ts.id}`);
+                                    }}
+                                    >
+                                        <Link href="#">
+                                            Diff
+                                        </Link>
+                                    </td>
+                                </tr>
+                                <tr
+                                    className={inactive[`S.${ts.id}`] ? "collapse" : ""}
+                                >
+                                    <td colSpan="3">
+                                        <ReactDiffViewer 
+                                            oldValue={ts.testcase.output}
+                                            newValue={ts.output ?
+                                                ts.output :
+                                                ts.testcase.output}
+                                            splitView={true}
+                                            showDiffOnly={false}
+                                        />
+                                    </td>
+                                </tr>
+                            </>);
                         })
                     }
                     {
-
                         reals?.map(tg => {
                             return (<>
                                 <tr
                                     key={tg.id}
-                                    onClick={() => toggleActive(tg.id)}
                                 >
                                     <td>{String(tg.id).padStart(2, "0")}</td>
                                     <td>
                                         <Badge bg={
                                             tg.status === "Success" ? "success" :
-                                                ["Warning", "Pending"].includes(tg.status) ? "warning" : "danger"}>
+                                                ["Warning", "Pending"].includes(tg.status) ?
+                                                    "warning" :
+                                                    "danger"}>
                                             {tg.status}
                                         </Badge>
                                     </td>
-                                    <td></td>
+                                    <td onClick={() => toggleActive(tg.id)}>
+                                        <Link href="#">
+                                            More
+                                        </Link>
+                                    </td>
                                 </tr>
                                 {
                                     tg.testcase_statuses.map(ts => {
@@ -152,7 +186,7 @@ export default function Source({
                                             key={ts.id}
                                             className={inactive[tg.id] ? "collapse" : ""}
                                         >
-                                            <td>{`${String(tg.id).padStart(2, "0")}.${String(ts.id).padStart(2, "0")}`}</td>
+                                            <td>{`${String(tg.id).padStart(2, "0")}.${String(ts.testcase.id).padStart(2, "0")}`}</td>
                                             <td>
                                                 <Badge bg={
                                                     ts.status === "Success" ? "success" :
