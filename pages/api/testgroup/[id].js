@@ -23,51 +23,17 @@ export async function handler(req, res) {
     } = req;
     switch (method) {
     case "GET": {
-        let testgroup;
-        try {
-            await Testgroup.findByPk(id);
-        } catch (e) {
-            try {
-                await res.status(200).json({
-                    message: e.message ||
-                            "Something went wrong while trying to get the testgroup"
-                });
-            } catch (e) {
-                console.log(e.message);
-            }
-        }
+        let testgroup = await Testgroup.findByPk(id, {
+            include: [
+                { model: Testcase, as: "testcases" },
+            ]
+        });
         if (testgroup?.testgrouptype_id !== 1) {
-            try {
-
-                await res.status(200).json(testgroup);
-            } catch (e) {
-                console.log(e.message);
-            }
+            await handleUnauthorized(req, res);
+            await res.status(200).json(testgroup);
             return;
         }
-        console.log("something");
-        try {
-
-            testgroup = await Testgroup.findByPk(id, {
-                include: [
-                    { model: Testcase, as: "testcases" }
-                ]
-            });
-        } catch (e) {
-            try {
-                await res.status(200).json({
-                    message: e.message ||
-                            "Something went wrong while trying to get the testgroup"
-                });
-            } catch (e) {
-                console.log(e.message);
-            }
-        }
-        try {
-            await res.status(200).json();
-        } catch (e) {
-            console.log(e.message);
-        }
+        await res.status(200).json(testgroup);
     }
         break;
     case "DELETE":

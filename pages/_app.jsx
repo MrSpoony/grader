@@ -24,6 +24,9 @@ export default function App({ Component, pageProps }) {
             <main>
                 <Component {...newPageProps} />
             </main>
+            <br/>
+            <br/>
+            <br/>
         </>
     );
 }

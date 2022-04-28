@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`testgroup` (
   `testgrouptype_id` INT NOT NULL,
   `task_id` INT NOT NULL,
   `points` INT NOT NULL,
+  `timelimit` INT NOT NULL,
   `limits` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_testgroup_testgrouptype_idx` (`testgrouptype_id` ASC) VISIBLE,

@@ -20,7 +20,12 @@ export default function SubmissionsPage({ data, session }) {
                 }
                 throw new Error(response.status, message);
             }
-            const data = await response.json();
+            let data = await response.json();
+            data = data.sort((b, a) => {
+                a = new Date(a.time);
+                b = new Date(b.time);
+                return a.getTime() - b.getTime();
+            });
             setSubmissions(data);
         };
         loadSubmissions();

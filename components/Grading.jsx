@@ -147,7 +147,8 @@ export default function Source({
                                     <td colSpan="3">
                                         <ReactDiffViewer 
                                             oldValue={ts.testcase.output}
-                                            newValue={ts.output ?
+                                            newValue={ts.output !== null &&
+                                                      ts.output !== undefined ?
                                                 ts.output :
                                                 ts.testcase.output}
                                             splitView={true}
