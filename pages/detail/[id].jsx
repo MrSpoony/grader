@@ -83,6 +83,7 @@ export default function TaskDetailPage({ data, session }) {
                     <Grading
                         submission={submission}
                         testgrouptypes={data?.testgrouptypes}
+                        statuses={data?.statuses}
                     />
                 </Tab>
             </Tabs>

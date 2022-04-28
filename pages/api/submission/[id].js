@@ -75,7 +75,7 @@ export async function handler(req, res) {
                     include: [{
                         model: Testcase, as: "testcase",
                         required: false,
-                        attributes: ["testgroup_id"],
+                        attributes: ["testgroup_id", "id"],
                         include: [{
                             model: Testgroup, as: "testgroup",
                             required: false,
