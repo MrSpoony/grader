@@ -8,7 +8,6 @@ import Link from "next/link";
 import React from "react";
 
 export default function Header({ session }) {
-
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
@@ -25,12 +24,19 @@ export default function Header({ session }) {
                         <Link href="/" passHref>
                             <Nav.Link>Tasks</Nav.Link>
                         </Link>
-                        <Link href="/submit" passHref>
-                            <Nav.Link>Submit</Nav.Link>
-                        </Link>
+                        { session?.user &&
+                            <>
+                                <Link href="/submit" passHref>
+                                    <Nav.Link>Submit</Nav.Link>
+                                </Link>
+                                <Link href="/submissions" passHref>
+                                    <Nav.Link>Submissions</Nav.Link>
+                                </Link>
+                            </>
+                        }
                     </Nav>
                     {
-                        (session && session.user) ?
+                        (session?.user) ?
                             <NavDropdown
                                 title={session.user.username}
                                 id="navbarScrollingDropdown"

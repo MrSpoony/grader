@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Table, Badge, } from "react-bootstrap";
+import { Table } from "react-bootstrap";
+import Status from "./Status";
 
 export default function Overview({ submission, statuses, tasks }) {
-    const [compilation, setCompilation] = useState("");
     const [sample, setSample] = useState("");
-    const [verdict, setVerdict] = useState("");
 
-    useEffect(() => {
-        setCompilation("Pending");
-        setSample("Pending");
-        setVerdict("Pending");
-    }, []);
-
-    useEffect(() => {
-        if (!statuses || !submission?.compilation_status) return;
-        setCompilation(statuses.find(s => {
-            return s.id === submission.compilation_status;
-        })?.status);
-    }, [submission?.compilation_status, statuses]);
+    useEffect(() => setSample("Pending"), []);
 
     useEffect(() => {
         if (!statuses || !submission.testcase_statuses) return;
@@ -28,14 +16,6 @@ export default function Overview({ submission, statuses, tasks }) {
             return s.id === testcaseStatus.status_id;
         })?.status);
     }, [submission?.testcase_statuses, statuses]);
-
-    useEffect(() => {
-        if (!statuses || !submission.verdict) return;
-        setVerdict(statuses.find(s => {
-            return s.id === submission.verdict;
-        })?.status);
-    }, [statuses, submission?.verdict]);
-
 
     if (!submission || !statuses) return (<>Loading</>);
 
@@ -70,31 +50,25 @@ export default function Overview({ submission, statuses, tasks }) {
                         <tr>
                             <th>Compilation</th>
                             <td>
-                                <Badge bg={
-                                    compilation === "Success" ? "success" : 
-                                        ["Warning", "Pending"].includes(compilation) ? "warning" : "danger"}>
-                                    {compilation}
-                                </Badge>
+                                <Status
+                                    variant={submission.compilation_status}
+                                    statuses={statuses}
+                                />
                             </td>
                         </tr>
                         <tr>
                             <th>Sample Cases</th>
                             <td>
-                                <Badge bg={
-                                    sample === "Success" ? "success" : 
-                                        ["Warning", "Pending"].includes(sample) ? "warning" : "danger"}>
-                                    {sample}
-                                </Badge>
+                                <Status variant={sample}/>
                             </td>
                         </tr>
                         <tr>
                             <th>Verdict</th>
                             <td>
-                                <Badge bg={
-                                    verdict === "Success" ? "success" : 
-                                        ["Warning", "Pending"].includes(verdict) ? "warning" : "danger"}>
-                                    {verdict}
-                                </Badge>
+                                <Status 
+                                    variant={submission.verdict}
+                                    statuses={statuses}
+                                />
                             </td>
                         </tr>
                         <tr>

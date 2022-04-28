@@ -54,9 +54,7 @@ export default function TaskDetailPage({ data, session }) {
 
     return (
         <Container>
-            <h1>
-                Submission Detail
-            </h1>
+            <h1>Submission Detail</h1>
             <Tabs
                 defaultActiveKey="overview"
                 id="uncontrolled-tab-example"
