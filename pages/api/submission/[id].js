@@ -13,11 +13,24 @@ import { withIronSessionApiRoute } from "iron-session/next";
 export default withIronSessionApiRoute(handler, config);
 
 export async function handler(req, res) {
-    const {
+    let {
         query: { id },
         method
     } = req;
-    const submission = await Submission.findByPk(id);
+    const submission = await Submission.findByPk(id, {
+        include: [{
+            model: Task, as: "task",
+            include: [{
+                model: Testgroup, as: "testgroups",
+            }]
+        }]
+    });
+    let maxScore = submission.task.testgroups.map(tg => {
+        return tg.points;
+    }, 0);
+    maxScore = maxScore.reduce((a, b) => a + b);
+    req.body.score = req.body.score < maxScore ? req.body.score : maxScore;
+    req.body.score = req.body.score > 0 ? req.body.score : 0;
     if (!submission) {
         res.status(404).json({ message: "Submission not found" });
         return;
@@ -119,6 +132,7 @@ export async function handler(req, res) {
         res.status(200).json(await Submission.destroy({ where: { id } }));
         break;
     case "PUT":
+        console.log(req.body);
         res.status(200).json(await Submission.update(
             req.body,
             { where: { id } }

@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`testcase_status` (
   CONSTRAINT `fk_testcase_status_submission1`
     FOREIGN KEY (`submission_id`)
     REFERENCES `grader`.`submission` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
