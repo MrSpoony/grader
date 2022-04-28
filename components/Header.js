@@ -28,9 +28,6 @@ export default function Header({ session }) {
                         <Link href="/submit" passHref>
                             <Nav.Link>Submit</Nav.Link>
                         </Link>
-                        <Link href="/editor" passHref>
-                            <Nav.Link>Editor</Nav.Link>
-                        </Link>
                     </Nav>
                     {
                         (session && session.user) ?
