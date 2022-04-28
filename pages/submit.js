@@ -71,8 +71,8 @@ export default function SubmitPage({ session, data }) {
             return;
         }
         const subm = await response.json();
-        console.log(subm);
         setIsLoading(false);
+        router.push(`/detail/${subm.id}`);
     };
 
     
@@ -86,19 +86,21 @@ export default function SubmitPage({ session, data }) {
         });
     };
     const handleFileChange = async (e) => {
-        const [file] = e.target.files
+        const [file] = e.target.files;
         let code = "";
         if (!file) {
             setSubmission({
                 ...submission,
                 code
-            })
+            });
         }
         code = await getCodeFromFile(file);
         const name = e.target.name;
         if (name === "code") {
             setCurrTask(tasks.find(t => {
-                return e.target.files[0].name.toLowerCase().includes(t.name.toLowerCase());
+                return e.target.files[0]
+                    .name.toLowerCase()
+                    .includes(t.name.toLowerCase());
             })?.id);
         }
         setSubmission({
