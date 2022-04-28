@@ -1,4 +1,7 @@
+import Compilation from "@components/Compilation";
 import Overview from "@components/Overview";
+import Source from "@components/Source";
+import Grading from "@components/Grading";
 import { useRedirectToLogin } from "@lib/hooks/useSession";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -12,23 +15,34 @@ export default function TaskDetailPage({ data, session }) {
     useRedirectToLogin(session);
 
     useEffect(() => {
-        if (!id) return;
-        const loadSubmission = async () => {
-            const response = await fetch(`/api/submission/${id}`);
-            if (!response.ok) {
-                let message = "";
-                try {
-                    message = await response.json().message;
-                } catch (e) {
-                    throw new Error(response.status);
+        const interval = setInterval(() => {
+            if (!id) return;
+            const loadSubmission = async () => {
+                const response = await fetch(`/api/submission/${id}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+                if (!response.ok) {
+                    let message = "";
+                    try {
+                        message = await response.json().message;
+                    } catch (e) {
+                        throw new Error(response.status);
+                    }
+                    throw new Error(response.status, message);
                 }
-                throw new Error(message);
-            }
-            const submission = await response.json();
-            setSubmission(submission);
-        };
-        loadSubmission();
-    }, [id]);
+                const submission = await response.json();
+                setSubmission(submission);
+            };
+            loadSubmission();
+            if (data?.statuses.find(s => {
+                return s.id === submission.verdict;
+            })?.status.toLowerCase() !== "pending") 
+                clearInterval(interval);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [id, data?.statuses, submission.verdict]);
 
     if (!submission || !data.tasks || !data.statuses) return (
         <Container>
@@ -56,13 +70,20 @@ export default function TaskDetailPage({ data, session }) {
                     />
                 </Tab>
                 <Tab eventKey="source" title="Source">
-                    Something else
+                    <Source
+                        submission={submission}
+                    />
                 </Tab>
                 <Tab eventKey="compilation" title="Compilation">
-                    Something else else
+                    <Compilation
+                        submission={submission}
+                    />
                 </Tab>
                 <Tab eventKey="grading" title="Grading">
-                    Something else else
+                    <Grading
+                        submission={submission}
+                        testgrouptypes={data?.testgrouptypes}
+                    />
                 </Tab>
             </Tabs>
         </Container>
