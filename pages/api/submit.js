@@ -18,9 +18,11 @@ export async function handler(req, res) {
         method,
     } = req;
     if (method === "POST") {
+        const currTime = Date.now();
         let submission = await Submission.create({
             user_id: user.id,
             task_id,
+            time: currTime,
             compilation_status: 8,
             compilation_text: "",
             code,
@@ -28,14 +30,15 @@ export async function handler(req, res) {
             score: 0
         });
         res.status(200).json(submission);
-        exec(`node lib/execute.js ${submission.id}`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`exec error: ${error}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
-        });
+        exec(`node lib/execute.js ${submission.id}`,
+            (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return;
+                }
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+            });
     } else {
         res.setHeader("Allow", ["POST"]);
         res.status(405).end(`Method ${method} Not Allowed`);

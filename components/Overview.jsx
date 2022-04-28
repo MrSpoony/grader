@@ -50,6 +50,13 @@ export default function Overview({ submission, statuses, tasks }) {
                             <td>{submission.id}</td>
                         </tr>
                         <tr>
+                            <th>Time</th>
+                            <td>{new Date(submission.time).toLocaleString() ? 
+                                new Date(submission.time).toLocaleString() :
+                                ""
+                            }</td>
+                        </tr>
+                        <tr>
                             <th>Task</th>
                             <td>{
                                 tasks &&

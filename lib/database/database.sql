@@ -134,6 +134,7 @@ CREATE TABLE IF NOT EXISTS `grader`.`submission` (
   `user_id` INT NOT NULL,
   `task_id` INT NOT NULL,
   `verdict` INT NOT NULL,
+  `time` TIMESTAMP NOT NULL,
   `compilation_status` INT NOT NULL,
   `compilation_text` TEXT NOT NULL,
   `code` MEDIUMTEXT NOT NULL,
