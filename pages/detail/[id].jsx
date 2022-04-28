@@ -84,6 +84,7 @@ export default function TaskDetailPage({ data, session }) {
                         submission={submission}
                         testgrouptypes={data?.testgrouptypes}
                         statuses={data?.statuses}
+                        tasks={data?.tasks}
                     />
                 </Tab>
             </Tabs>

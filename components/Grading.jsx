@@ -2,20 +2,67 @@ import React, { useEffect, useState } from "react";
 import { Badge, Table } from "react-bootstrap";
 import Link from "next/link";
 
-export default function Source({ submission, testgrouptypes, statuses }) {
+
+export default function Source({
+    submission,
+    testgrouptypes,
+    statuses,
+    tasks
+}) {
     const [testcaseStatuses, setTestcaseStatuses] = useState([]);
     const [samples, setSamples] = useState([]);
     const [reals, setReals] = useState([]);
+    const [inactive, setInactive] = useState({});
+    const [task, setTask] = useState({});
 
     useEffect(() => {
-        if (!testcaseStatuses) return;
+        if (!tasks || !submission?.task_id) return;
+        setTask(tasks.find(t => t.id === submission.task_id));
+    }, [tasks, submission?.task_id]);
+
+    useEffect(() => {
+        if (!testcaseStatuses ||
+            !task.testgroups ||
+            !testgrouptypes) return;
         setSamples(testcaseStatuses.filter(ts => {
             return ts.testcase.testgroup.testgrouptype.type === "sample";
         }));
-        setReals(testcaseStatuses.filter(ts => {
+    
+        const testgroups = task.testgroups;
+        if (typeof(testgroups) !== typeof([])) return;
+        let realGroups = testgroups.filter(tg => {
+            return testgrouptypes.find(tgt => {
+                return tgt.id === tg.testgrouptype_id;
+            })?.type !== "sample";
+        }).sort((a, b) => {
+            return a.id - b.id;
+        });
+        const pseudoReals = testcaseStatuses.filter(ts => {
             return ts.testcase.testgroup.testgrouptype.type !== "sample";
-        }));
-    }, [testcaseStatuses]);
+        });
+        realGroups.map(rg => {
+            rg.testcase_statuses = pseudoReals.filter(pr => {
+                return pr.testcase.testgroup.id === rg.id;
+            });
+            const firstNotSuccess = rg.testcase_statuses.find(ts => {
+                return ts.status.toLowerCase() !== "sucess";
+            });
+            if (firstNotSuccess)
+                rg.status = firstNotSuccess.status;
+            else rg.status = "Success";
+            return rg;
+        });
+        setReals(realGroups);
+    }, [testcaseStatuses, testgrouptypes, task.testgroups]);
+
+    useEffect(() => {
+        if (!reals.length) return;
+        let realActives = {};
+        Object.entries(reals).forEach(k => {
+            realActives[k[1].id] = true;
+        });
+        setInactive(realActives);
+    }, [reals]);
 
     useEffect(() => {
         if (!submission?.testcase_statuses ||
@@ -25,9 +72,12 @@ export default function Source({ submission, testgrouptypes, statuses }) {
             if (testgrouptypes.find(tgt => {
                 return tgt.id === a.testcase.testgroup;
             })?.type.toLowerCase() === "sample") return -1;
-            const diffTestgroups = a.testcase.testgroup.id - 
-                    b.testcase.testgroup.id;
-            if (diffTestgroups) return diffTestgroups;
+            if (testgrouptypes.find(tgt => {
+                return tgt.id === b.testcase.testgroup;
+            })?.type.toLowerCase() === "sample") return 1;
+            const diffTestgroups = (a.testcase.testgroup.id - 
+                    b.testcase.testgroup.id);
+            if (diffTestgroups !== 0) return diffTestgroups;
             return a.testcase.id - b.testcase.id;
         }).map(el => {
             el.status = statuses.find(s => {
@@ -36,6 +86,12 @@ export default function Source({ submission, testgrouptypes, statuses }) {
             return el;
         }));
     }, [submission?.testcase_statuses, testgrouptypes, statuses]);
+
+    const toggleActive = index => {
+        let updated = {...inactive};
+        updated[index] = !updated[index];
+        setInactive(updated);
+    };
 
     if (!testcaseStatuses.length ||
         !submission ||
@@ -74,23 +130,45 @@ export default function Source({ submission, testgrouptypes, statuses }) {
                     }
                     {
 
-                        reals?.map(ts => {
-                            return (<tr key={ts.id}>
-                                <td>{`${String(ts.testcase.testgroup_id).padStart(2, "0")}.${String(ts.testcase.id).padStart(2, "0")}`}</td>
-                                <td>
-                                    <Badge bg={
-                                        ts.status === "Success" ? "success" :
-                                            ["Warning", "Pending"].includes(ts.status) ? "warning" : "danger"}>
-                                        {ts.status}
-                                    </Badge>
-                                </td>
-                                <td></td>
-                            </tr>);
+                        reals?.map(tg => {
+                            return (<>
+                                <tr
+                                    key={tg.id}
+                                    onClick={() => toggleActive(tg.id)}
+                                >
+                                    <td>{String(tg.id).padStart(2, "0")}</td>
+                                    <td>
+                                        <Badge bg={
+                                            tg.status === "Success" ? "success" :
+                                                ["Warning", "Pending"].includes(tg.status) ? "warning" : "danger"}>
+                                            {tg.status}
+                                        </Badge>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                {
+                                    tg.testcase_statuses.map(ts => {
+                                        return (<tr
+                                            key={ts.id}
+                                            className={inactive[tg.id] ? "collapse" : ""}
+                                        >
+                                            <td>{`${String(tg.id).padStart(2, "0")}.${String(ts.id).padStart(2, "0")}`}</td>
+                                            <td>
+                                                <Badge bg={
+                                                    ts.status === "Success" ? "success" :
+                                                        ["Warning", "Pending"].includes(ts.status) ? "warning" : "danger"}>
+                                                    {ts.status}
+                                                </Badge>
+                                            </td>
+                                            <td></td>
+                                        </tr>);
+                                    })
+                                }
+                            </>);
                         })
                     }
                 </tbody>
             </>}</Table>
-            <pre>{JSON.stringify(testcaseStatuses, 2, 4)}</pre>
         </>
     );
 }
