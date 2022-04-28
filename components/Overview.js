@@ -7,6 +7,12 @@ export default function Overview({ submission, statuses, tasks }) {
     const [verdict, setVerdict] = useState("");
 
     useEffect(() => {
+        setCompilation("Pending");
+        setSample("Pending");
+        setVerdict("Pending");
+    }, []);
+
+    useEffect(() => {
         if (!statuses || !submission?.compilation_status) return;
         setCompilation(statuses.find(s => {
             return s.id === submission.compilation_status;
@@ -59,7 +65,7 @@ export default function Overview({ submission, statuses, tasks }) {
                             <td>
                                 <Badge bg={
                                     compilation === "Success" ? "success" : 
-                                        compilation === "Warning" ? "warning" : "danger"}>
+                                        ["Warning", "Pending"].includes(compilation) ? "warning" : "danger"}>
                                     {compilation}
                                 </Badge>
                             </td>
@@ -69,7 +75,7 @@ export default function Overview({ submission, statuses, tasks }) {
                             <td>
                                 <Badge bg={
                                     sample === "Success" ? "success" : 
-                                        sample === "Warning" ? "warning" : "danger"}>
+                                        ["Warning", "Pending"].includes(sample) ? "warning" : "danger"}>
                                     {sample}
                                 </Badge>
                             </td>
@@ -79,13 +85,16 @@ export default function Overview({ submission, statuses, tasks }) {
                             <td>
                                 <Badge bg={
                                     verdict === "Success" ? "success" : 
-                                        verdict === "Warning" ? "warning" : "danger"}>
+                                        ["Warning", "Pending"].includes(verdict) ? "warning" : "danger"}>
                                     {verdict}
                                 </Badge>
                             </td>
                         </tr>
+                        <tr>
+                            <th>Score</th>
+                            <td>{submission?.score && submission.score}</td>
+                        </tr>
                     </>)
-
                 }</tbody>
             </Table>
         </>
