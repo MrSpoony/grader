@@ -95,7 +95,6 @@ export default function Source({
     const toggleActive = index => {
         let updated = {...inactive};
         updated[index] = !updated[index];
-        console.log(updated);
         setInactive(updated);
     };
 

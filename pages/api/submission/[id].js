@@ -124,8 +124,7 @@ export async function handler(req, res) {
             return;
         }
         for (let i = 0; i < 100; i++)
-            console.log("testing");
-        res.status(200).json(await Submission.destroy({ where: { id } }));
+            res.status(200).json(await Submission.destroy({ where: { id } }));
         break;
     case "PUT": {
         let maxScore = submission.task.testgroups.map(tg => {
@@ -134,7 +133,6 @@ export async function handler(req, res) {
         maxScore = maxScore.reduce((a, b) => a + b);
         req.body.score = req.body.score < maxScore ? req.body.score : maxScore;
         req.body.score = req.body.score > 0 ? req.body.score : 0;
-        console.log(req.body);
         res.status(200).json(await Submission.update(
             req.body,
             { where: { id } }

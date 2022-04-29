@@ -29,7 +29,8 @@ export default function SubmitPage({ session, data }) {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [tasks, setTasks] = useState([]);
-    const [currTask, setCurrTask] = useState(1);
+    const [currTask, setCurrTask] = useState(-1);
+
     const { task } = router.query;
 
     useRedirectToLogin(session);
@@ -39,16 +40,16 @@ export default function SubmitPage({ session, data }) {
     }, []);
 
     useEffect(() => {
-        const sortMethod = (task1, task2) => {
-            if (task1.id === currTask) return -1;
-            if (task2.id === currTask) return 1;
-            if (task1.name.replace(/\s+/g, "") === task) return -1;
-            if (task2.name.replace(/\s+/g, "") === task) return 1;
-            return task1.name - task2.name;
-        };
-        if (!data || !data.tasks) return;
-        setTasks(data.tasks.sort(sortMethod));
-    }, [data, data.tasks, task, currTask, tasks]);
+        if (!data?.tasks) return;
+        setTasks(data.tasks);
+    }, [data]);
+
+    useEffect(() => {
+        if (!tasks || !task) return;
+        setCurrTask(tasks.find(t => {
+            return t.name.replace(/\s+/g, "") === task;
+        })?.id);
+    }, [tasks, task]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -106,9 +107,7 @@ export default function SubmitPage({ session, data }) {
         });
     };
 
-    if (!data.tasks) {
-        return <Loading/>;
-    }
+    if (!tasks) return <Loading/>;
 
     const centerLabel = {
         height: "100%",
@@ -150,13 +149,16 @@ export default function SubmitPage({ session, data }) {
                         <Col sm={9}>
                             <Form.Select name="task_id" onChange={handleChange}>
                                 {
-                                    tasks.map(task => {
+                                    tasks.map(t => {
                                         return (
                                             <option
-                                                key={task.id}
-                                                value={task.id}
+                                                key={t.id}
+                                                value={t.id}
+                                                selected={
+                                                    t.id === currTask ? true : false
+                                                }
                                             >
-                                                {task.name}
+                                                {t.name}
                                             </option>
                                         );
                                     })

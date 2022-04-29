@@ -11,6 +11,9 @@ export default async function handler(req, res) {
             t = await sequelize.transaction();
         } catch (e) {
             console.log(e.message);
+            await res.status(500).json({
+                message: "Transaction failed, Log: " + e.message
+            });
             return;
         }
         try {
