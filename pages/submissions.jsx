@@ -1,18 +1,17 @@
 import { useRedirectToLogin } from "@lib/hooks/useSession";
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form, Table } from "react-bootstrap";
+import { Alert, Button, Container, Form, Table } from "react-bootstrap";
 import Link from "next/link";
 import Status from "@components/Status";
 import Loading from "@components/Loading";
-import { Alert } from "bootstrap";
 import { getSubmissions, getUsers, updateSubmissionScore } from "@lib/api";
 
 export default function SubmissionsPage({ data, session }) {
-    useRedirectToLogin(session);
     const [submissions, setSubmissions] = useState([]);
     const [users, setUsers] = useState([]);
     const [newScore, setNewScore] = useState(0);
     const [error, setError] = useState("");
+    useRedirectToLogin(session);
 
     const deleteSubmission = async (s) => {
         setSubmissions(submissions.filter(sb => sb.id !== s.id));

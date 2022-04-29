@@ -55,7 +55,9 @@ export default function TaskDetailPage({ data }) {
             {
                 task.testgroups ?
                     <>
-                        <h4>There are {task.testgroups.length} testgroups:</h4>
+                        <h4>
+                            There are {task.testgroups.length-1} testgroups:
+                        </h4>
                         <h5>Limits:</h5>
                         <ul>
                             {

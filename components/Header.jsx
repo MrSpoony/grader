@@ -41,10 +41,6 @@ export default function Header({ session }) {
                                 title={session.user.username}
                                 id="navbarScrollingDropdown"
                             >
-                                <NavDropdown.Item href="/settings">
-                                    Settings
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
                                 <NavDropdown.Item href="/logout">
                                     Logout
                                 </NavDropdown.Item>
