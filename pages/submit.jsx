@@ -51,6 +51,15 @@ export default function SubmitPage({ session, data }) {
         })?.id);
     }, [tasks, task]);
 
+    useEffect(() => {
+        setSubmission(submission => {
+            return {
+                ...submission,
+                ["task_id"]: currTask
+            };
+        });
+    }, [currTask]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -83,6 +92,7 @@ export default function SubmitPage({ session, data }) {
             [name]: value
         });
     };
+
     const handleFileChange = async (e) => {
         const [file] = e.target.files;
         let code = "";
