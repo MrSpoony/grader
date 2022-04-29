@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
+import Loading from "./Loading";
 import Status from "./Status";
 
 export default function Overview({ submission, statuses, tasks }) {
@@ -17,7 +18,7 @@ export default function Overview({ submission, statuses, tasks }) {
         })?.status);
     }, [submission?.testcase_statuses, statuses]);
 
-    if (!submission || !statuses) return (<>Loading</>);
+    if (!submission || !statuses) return <Loading/>;
 
     return (
         <>

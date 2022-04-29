@@ -6,6 +6,7 @@ import { useRedirectToLogin } from "@lib/hooks/useSession";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { Alert, Tab, Tabs, Container } from "react-bootstrap";
+import Loading from "@components/Loading";
 
 export default function TaskDetailPage({ data, session }) {
     const router = useRouter();
@@ -44,13 +45,7 @@ export default function TaskDetailPage({ data, session }) {
         return () => clearInterval(interval);
     }, [id, data?.statuses, submission.verdict]);
 
-    if (!submission || !data.tasks || !data.statuses) return (
-        <Container>
-            <Alert variant="info">
-                Loading
-            </Alert>
-        </Container>
-    );
+    if (!submission || !data.tasks || !data.statuses) return <Loading/>;
 
     return (
         <Container>

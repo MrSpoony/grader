@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Badge, Table } from "react-bootstrap";
 import ReactDiffViewer from "react-diff-viewer";
 import Link from "next/link";
+import Loading from "@components/Loading";
 
 
 export default function Source({
@@ -104,7 +105,7 @@ export default function Source({
         !statuses ||
         !samples ||
         !reals
-    ) return (<>Loading</>);
+    ) return <Loading/>;
 
     return (
         <>

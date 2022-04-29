@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Highlight from "react-highlight";
+import Loading from "./Loading";
 
 export default function Source({ submission }) {
     const [source, setSource] = useState("");
@@ -10,7 +11,7 @@ export default function Source({ submission }) {
     }, [submission?.code]);
 
 
-    if (!submission) return (<>Loading</>);
+    if (!submission) return (<Loading/>);
 
     return (
         <>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useRedirectToHome } from "@lib/hooks/useSession";
+import Loading from "@components/Loading";
 
 const validateUser = (user) => {
     let errors = {};
@@ -126,9 +127,7 @@ export default function LoginPage({ session }) {
                 }
                 {
                     isLoading &&
-                    <Alert variant="info">
-                        Loading...
-                    </Alert>
+                    <Loading/>
                 }
             </Form>
         </Container>

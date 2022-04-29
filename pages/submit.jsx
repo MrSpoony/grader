@@ -1,3 +1,4 @@
+import Loading from "@components/Loading";
 import { useRedirectToLogin } from "@lib/hooks/useSession";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -110,11 +111,7 @@ export default function SubmitPage({ session, data }) {
     };
 
     if (!data.tasks) {
-        return (
-            <Container>
-                <Alert variant="info">Loading...</Alert>
-            </Container>
-        );
+        return <Loading/>;
     }
 
     const centerLabel = {
@@ -193,7 +190,7 @@ export default function SubmitPage({ session, data }) {
             }
             {
                 isLoading &&
-                <Alert variant="info">Loading...</Alert>
+                <Loading/>
             }
         </Container>
     );

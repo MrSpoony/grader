@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
+import Loading from "@components/Loading";
 
 export default function TaskDetailPage({ data }) {
     const router = useRouter();
@@ -35,13 +36,7 @@ export default function TaskDetailPage({ data }) {
         loadSampleCases(sampleTestgroup);
     }, [data, task]);
 
-    if (!data.tasks || !task?.statement || !task?.name) return (
-        <Container>
-            <Alert variant="info">
-                Loading
-            </Alert>
-        </Container>
-    );
+    if (!data.tasks || !task?.statement || !task?.name) return <Loading/>;
 
     return (
         <Container>

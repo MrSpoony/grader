@@ -1,15 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import { Alert, Card, Container } from "react-bootstrap";
+import Loading from "@components/Loading";
 
 export default function IndexPage({ data }) {
-    if (!data.tasks) {
-        return (
-            <Container>
-                <Alert variant="info">Loading...</Alert>
-            </Container>
-        );
-    }
+    if (!data.tasks) return <Loading/>;
     return (
         <Container>
             <h1 className="mb-5">Tasks:</h1>

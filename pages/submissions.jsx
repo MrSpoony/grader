@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Container, Form, Table } from "react-bootstrap";
 import Link from "next/link";
 import Status from "@components/Status";
+import Loading from "@components/Loading";
 
 export default function SubmissionsPage({ data, session }) {
     const [submissions, setSubmissions] = useState([]);
@@ -111,7 +112,7 @@ export default function SubmissionsPage({ data, session }) {
     if (!submissions ||
         !data.tasks ||
         !data.statuses
-    ) return (<>Loading...</>);
+    ) return <Loading/>;
 
     return (
         <Container>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useRedirectToHome } from "@lib/hooks/useSession";
+import Loading from "@components/Loading";
 
 export default function LoginPage({ session }) {
     const [error, setError] = useState("");
@@ -86,9 +87,7 @@ export default function LoginPage({ session }) {
                 }
                 {
                     isLoading &&
-                    <Alert variant="info">
-                        Loading...
-                    </Alert>
+                    <Loading/>
                 }
             </Form>
             Don`t have an account yet?

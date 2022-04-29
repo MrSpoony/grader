@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Highlight from "react-highlight";
+import Loading from "./Loading";
 
 export default function Compilation({ submission }) {
     const [compilation, setCompilation] = useState("");
@@ -10,7 +11,7 @@ export default function Compilation({ submission }) {
     }, [submission?.compilation_text]);
 
 
-    if (!submission) return (<>Loading</>);
+    if (!submission) return <Loading/>;
 
     return (
         <>
