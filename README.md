@@ -77,7 +77,7 @@ it is ok, when some warnings pop up but there should definitely be no error.
 
 1. The tester opens the project folder in the terminal (whereever npm is installed).
 2. The tester changes line 4 in file `lib/server.js` to where the mysql server runs (If it's your host machine enter the IP of your host machine)
-3. The tester creates a mysql user `grader` with the password `graderuserpassword`.
+3. The tester creates a mysql user `graderuser` with the password `graderuserpassword`.
 4. The tester runs the `lib/database/database.sql` file with the above mysql configuration.
 5. The tester runs `npm run dev`.
 

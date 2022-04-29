@@ -25,12 +25,6 @@ export async function handler(req, res) {
             }]
         }]
     });
-    let maxScore = submission.task.testgroups.map(tg => {
-        return tg.points;
-    }, 0);
-    maxScore = maxScore.reduce((a, b) => a + b);
-    req.body.score = req.body.score < maxScore ? req.body.score : maxScore;
-    req.body.score = req.body.score > 0 ? req.body.score : 0;
     if (!submission) {
         res.status(404).json({ message: "Submission not found" });
         return;
@@ -129,14 +123,23 @@ export async function handler(req, res) {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
+        for (let i = 0; i < 100; i++)
+            console.log("testing");
         res.status(200).json(await Submission.destroy({ where: { id } }));
         break;
-    case "PUT":
+    case "PUT": {
+        let maxScore = submission.task.testgroups.map(tg => {
+            return tg.points;
+        }, 0);
+        maxScore = maxScore.reduce((a, b) => a + b);
+        req.body.score = req.body.score < maxScore ? req.body.score : maxScore;
+        req.body.score = req.body.score > 0 ? req.body.score : 0;
         console.log(req.body);
         res.status(200).json(await Submission.update(
             req.body,
             { where: { id } }
         ));
+    }
         break;
     default:
         res.setHeader("Allow", ["GET"]);

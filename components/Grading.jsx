@@ -148,6 +148,8 @@ export default function Source({
                                     <td colSpan="3">
                                         <ReactDiffViewer 
                                             oldValue={ts.testcase.output}
+                                            leftTitle="Input"
+                                            rightTitle="Output"
                                             newValue={ts.output !== null &&
                                                       ts.output !== undefined ?
                                                 ts.output :

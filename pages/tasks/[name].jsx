@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Alert } from "react-bootstrap";
 import Loading from "@components/Loading";
-import { Alert } from "bootstrap";
 import { getSampleCases } from "@lib/api";
+import SampleCases from "@components/SampleCases";
+import Testgroups from "@components/Testgroups";
 
 export default function TaskDetailPage({ data }) {
     const router = useRouter();
@@ -53,72 +54,13 @@ export default function TaskDetailPage({ data }) {
                 {task.statement}
             </p>
             {
-                task.testgroups ?
-                    <>
-                        <h4>
-                            There are {task.testgroups.length-1} testgroups:
-                        </h4>
-                        <h5>Limits:</h5>
-                        <ul>
-                            {
-                                task.testgroups.map((tg, i) => {
-                                    if (data?.testgrouptypes.find(tgt => {
-                                        return tgt.id === tg.testgrouptype_id;
-                                    })?.type === "sample") return "";
-                                    return (<li key={tg.key}>
-                                    Testgroup {i+1}: {tg.limits}
-                                    </li>);
-                                })
-                            }
-                        </ul>
-                        <h5>Timelimits:</h5>
-                        <ul>
-                            {
-                                task.testgroups.map((tg, i) => {
-                                    if (data?.testgrouptypes.find(tgt => {
-                                        return tgt.id === tg.testgrouptype_id;
-                                    })?.type === "sample") return "";
-                                    return (<li key={tg.key}>
-                                    Testgroup {i+1}: {tg.timelimit}ms
-                                    </li>);
-                                })
-                            }
-                        </ul>
-                    </> :
-                    ""
+                task.testgroups && <Testgroups
+                    testgroups={task.testgroups}
+                    testgrouptypes={data?.testgrouptypes}
+                />
             }
             {
-                sampleCases.length ?
-                    <> 
-                        <h4 className="my-4">Samples:</h4>
-                        {
-                            sampleCases.map((sc, i) => {
-                                return (
-                                    <div key={sc.id} >
-                                        <h5>Sample.{String(i).padStart(2, "0")}</h5>
-                                        <Row className="mb-4">
-                                            <Col className="border">
-                                                <h6 className="mt-3">
-                                                    Input:
-                                                </h6>
-                                                <pre>
-                                                    {sc.input}
-                                                </pre>
-                                            </Col>
-                                            <Col className="border">
-                                                <h6 className="mt-3">
-                                                    Output:
-                                                </h6>
-                                                <pre>
-                                                    {sc.output}
-                                                </pre>
-                                            </Col>
-                                        </Row>
-                                    </div>
-                                );
-                            })
-                        }
-                    </> : ""
+                sampleCases.length && <SampleCases sampleCases={sampleCases}/>
             }
             <Link href={`/submit?task=${task.name.replace(/\s+/g, "")}`} passHref>
                 <Button variant="primary">

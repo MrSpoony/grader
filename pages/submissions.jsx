@@ -4,20 +4,23 @@ import { Alert, Button, Container, Form, Table } from "react-bootstrap";
 import Link from "next/link";
 import Status from "@components/Status";
 import Loading from "@components/Loading";
+import { doDeleteSubmission } from "@lib/api";
 import { getSubmissions, getUsers, updateSubmissionScore } from "@lib/api";
 
 export default function SubmissionsPage({ data, session }) {
     const [submissions, setSubmissions] = useState([]);
+    const [allSubmissions, setAllSubmissions] = useState([]);
     const [users, setUsers] = useState([]);
     const [newScore, setNewScore] = useState(0);
     const [error, setError] = useState("");
+    const [filter, setFilter] = useState("");
     useRedirectToLogin(session);
 
     const deleteSubmission = async (s) => {
-        setSubmissions(submissions.filter(sb => sb.id !== s.id));
+        setAllSubmissions(allSubmissions.filter(sb => sb.id !== s.id));
         setError("");
         try {
-            await deleteSubmission(s);
+            await doDeleteSubmission(s);
         } catch (e) {
             setError(e.message);
             return;
@@ -27,7 +30,7 @@ export default function SubmissionsPage({ data, session }) {
     const changeScore = async (e, s) => {
         e.preventDefault();
         setError("");
-        setSubmissions(submissions.map(sb => {
+        setAllSubmissions(allSubmissions.map(sb => {
             if (sb.id !== s.id) return sb;
             let maxPoints = data?.tasks?.find(t => {
                 return t.id === s.task_id;
@@ -49,6 +52,10 @@ export default function SubmissionsPage({ data, session }) {
         setNewScore(val);
     };
 
+    const changeFilter = (e) => {
+        setFilter(e.target.value);
+    };
+
     useEffect(() => {
         const loadSubmissions = async () => {
             let data;
@@ -63,7 +70,7 @@ export default function SubmissionsPage({ data, session }) {
                 b = new Date(b.time);
                 return a.getTime() - b.getTime();
             });
-            setSubmissions(data);
+            setAllSubmissions(data);
         };
         loadSubmissions();
     }, []);
@@ -83,6 +90,17 @@ export default function SubmissionsPage({ data, session }) {
         loadUsers();
     }, [session]);
 
+    useEffect(() => {
+        if (!data?.tasks) return;
+        setSubmissions(() => allSubmissions.filter(s => {
+            return data?.tasks?.filter(t => {
+                return t.name.toLowerCase().includes(filter.toLowerCase());
+            }).find(t => {
+                return t.id === s.task_id;
+            });
+        }));
+    }, [filter, data?.tasks, allSubmissions]);
+
     if (!submissions ||
         !data.tasks ||
         !data.statuses ||
@@ -92,6 +110,12 @@ export default function SubmissionsPage({ data, session }) {
     return (
         <Container>
             <h1>Submissions</h1>
+            <Form.Control
+                className="my-2"
+                type="text"
+                placeholder="Filter Task"
+                onChange={changeFilter}
+            />
             { error &&
             <Alert variant="danger">
                 {error ? "Error: " + error : "Some unknown error occured..."}
@@ -115,7 +139,11 @@ export default function SubmissionsPage({ data, session }) {
                 <tbody>{
                     submissions.map(s => {
                         const task = data.tasks.find(t => t.id === s.task_id);
-                        return (<tr key={s.id}>
+                        return (<tr 
+                            key={s.id} 
+                            style={{
+                                lineHeight: "2.2"
+                            }}>
                             <td>{new Date(s.time).toLocaleString()}</td>
                             { session?.user?.roles?.find(r => r.role === "admin") &&
                             <td>{users?.find(u => {
