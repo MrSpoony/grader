@@ -54,11 +54,12 @@ You can:
 * Functional Workstation (Internet, Monitor, Mouse, Keyboard, PC etc.)
 * GIT with a rather new version.
 * Newest version of NodeJS is installed and working.
+* WSL 1 or 2 installed
 
 #### Procedure
 
 1. The tester clones the git repository `git clone https://git.bbcag.ch/inf-bl/be/2021/wf/team-h/kimi-l-ffel/grader.git`
-3. The tester opens the project folder in the terminal (whereever npm is installed).
+3. The tester opens the project folder in the wsl.
 4. The tester runs `npm install --force` in the terminal.
 
 #### Expected result
@@ -75,7 +76,7 @@ it is ok, when some warnings pop up but there should definitely be no error.
 #### Procedure
 
 1. The tester opens the project folder in the terminal (whereever npm is installed).
-2. The tester changes line 4 in file `lib/server.js` to where the mysql server runs (most of the time `localhost`)
+2. The tester changes line 4 in file `lib/server.js` to where the mysql server runs (If it's your host machine enter the IP of your host machine)
 3. The tester creates a mysql user `grader` with the password `graderuserpassword`.
 4. The tester runs the `lib/database/database.sql` file with the above mysql configuration.
 5. The tester runs `npm run dev`.
@@ -213,7 +214,7 @@ Badges except the `Compilation` one should be red and have the text `WA` in them
 1. The tester clicks on a task,
 2. Reads the information given,
 3. Clicks submit,
-4. Uploads a file which gives the right to the problem,
+4. Uploads a file which gives the right answer to the problem,
 5. Selects the task he wants to submit for,
 6. Clicks submit
 
@@ -222,7 +223,7 @@ Badges except the `Compilation` one should be red and have the text `WA` in them
 After clicking submit the second time, the user should get redirected to
 a detail page where the information should slowly appear one after another.
 
-Because the submitted file should give the wrong answer everywhere all the
+Because the submitted file should give the right answer everywhere all the
 Badges should be green and have the text `Success` in them.
 
 
@@ -249,30 +250,6 @@ previous Detail page.
 
 #### Prerequisites
 
-* T-07
-
-#### Procedure
-
-1. The tester clicks on a task,
-2. Reads the information given,
-3. Clicks submit,
-4. Uploads a file which gives the wrong answer to the problem but compiles,
-5. Selects the task he wants to submit for,
-6. Clicks submit
-
-#### Expected result
-
-After clicking submit the second time, the user should get redirected to
-a detail page where the information should slowly appear one after another.
-
-Because the submitted file should give the wrong answer everywhere all the
-Badges except the `Compilation` one should be red and have the text `WA` in them.
-
-
-### T-08
-
-#### Prerequisites
-
 * T-03
 
 #### Procedure
@@ -282,3 +259,24 @@ Badges except the `Compilation` one should be red and have the text `WA` in them
 #### Expected result
 
 There should be a text saying `"message": "Everything is deleted"`.
+
+
+
+## Testcase Results
+
+Tested by Simeon Trumpf
+
+
+| Testcase  | Working             | Comments                                              |
+| --------- | ------------------- | ----------------------------------------------------- |
+| T-01      | :heavy_check_mark:  | Works                                                 |
+| T-02      | :heavy_check_mark:  | Works                                                 |
+| T-03      | :heavy_check_mark:  | Only works if the MySQL Database is set up correctly  |
+| T-04      | :heavy_check_mark:  | Works as described                                    |
+| T-05      | :heavy_check_mark:  | Error happens as described                            |
+| T-06      | :heavy_check_mark:  | Can create a user                                     |
+| T-07      | :heavy_check_mark:  | Works as expected                                     |
+| T-08      | :heavy_check_mark:  | Works but only in WSL                                 |
+| T-09      | :heavy_check_mark:  | Works but only in WSL                                 |
+| T-10      | :heavy_check_mark:  | All the information gets displayed                    |
+| T-11      | :heavy_check_mark:  | The testdata is gone!                                 |

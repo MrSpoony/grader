@@ -8,11 +8,11 @@ import { doRegister } from "@lib/api";
 const validateUser = (user) => {
     let errors = {};
     let isValid = true;
-    if (user.username.trim() === "") {
+    if (user?.username?.trim() === "") {
         errors = "Username cannot be empty";
         isValid = false;
     }
-    if (user.password !== user.password2) {
+    if (user?.password !== user?.password2) {
         errors = "Passwords do not match!";
         isValid = false;
     }
