@@ -3,11 +3,13 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import Loading from "@components/Loading";
+import { Alert } from "bootstrap";
 
 export default function TaskDetailPage({ data }) {
     const router = useRouter();
     const [task, setTask] = useState({});
     const [sampleCases, setSampleCases] = useState([]);
+    const [error, setError] = useState("");
 
     const { name } = router.query;
 
@@ -28,7 +30,8 @@ export default function TaskDetailPage({ data }) {
         });
         const loadSampleCases = async (sampleTestgroup) => {
             const response = await fetch(`/api/testgroup/${sampleTestgroup.id}`);
-            if (!response.ok) throw new Error(await response.json());
+            if (!response.ok) setError(await response.json() || 
+                "Some unknown error occured");
             const data = await response.json();
             console.log(data);
             setSampleCases(data.testcases);
@@ -117,6 +120,10 @@ export default function TaskDetailPage({ data }) {
                     Submit
                 </Button>
             </Link>
+            { error &&
+            <Alert variant="danger">
+                {error}
+            </Alert>}
         </Container>
     );
 }

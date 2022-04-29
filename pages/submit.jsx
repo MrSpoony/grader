@@ -67,7 +67,8 @@ export default function SubmitPage({ session, data }) {
             body: JSON.stringify(submission),
         });
         if (!response.ok) {
-            setError(await response.json().message);
+            setError(await response.json().message || 
+                "Something unexpected went wrong!");
             setIsLoading(false);
             return;
         }

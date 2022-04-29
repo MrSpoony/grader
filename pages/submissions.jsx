@@ -4,15 +4,18 @@ import { Button, Container, Form, Table } from "react-bootstrap";
 import Link from "next/link";
 import Status from "@components/Status";
 import Loading from "@components/Loading";
+import { Alert } from "bootstrap";
 
 export default function SubmissionsPage({ data, session }) {
     const [submissions, setSubmissions] = useState([]);
     const [users, setUsers] = useState([]);
     const [newScore, setNewScore] = useState(0);
+    const [error, setError] = useState("");
     useRedirectToLogin(session);
 
     const deleteSubmission = async (s) => {
         setSubmissions(submissions.filter(sb => sb.id !== s.id));
+        setError("");
         const response = await fetch(`/api/submission/${s.id}`, {
             method: "DELETE"
         });
@@ -21,9 +24,11 @@ export default function SubmissionsPage({ data, session }) {
             try {
                 message = await response.json().message;
             } catch (e) {
-                throw new Error(response.status);
+                setError(response.status || "Something unexpected went wrong!");
+                return;
             }
-            throw new Error(response.status, message);
+            setError(message || "Somethig unexpected went wrong!");
+            return;
         }
         const data = await response.json();
         console.log(data);
@@ -31,6 +36,7 @@ export default function SubmissionsPage({ data, session }) {
 
     const changeScore = async (e, s) => {
         e.preventDefault();
+        setError("");
         setSubmissions(submissions.map(sb => {
             if (sb.id !== s.id) return sb;
             let maxPoints = data?.tasks?.find(t => {
@@ -56,9 +62,11 @@ export default function SubmissionsPage({ data, session }) {
             try {
                 message = await response.json().message;
             } catch (e) {
-                throw new Error(response.status);
+                setError(response.status);
+                return;
             }
-            throw new Error(response.status, message);
+            setError(response.status, message);
+            return;
         }
     };
 
@@ -75,9 +83,11 @@ export default function SubmissionsPage({ data, session }) {
                 try {
                     message = await response.json().message;
                 } catch (e) {
-                    throw new Error(response.status);
+                    setError(response.status);
+                    return;
                 }
-                throw new Error(response.status, message);
+                setError(response.status, message);
+                return;
             }
             let data = await response.json();
             data = data.sort((b, a) => {
@@ -99,9 +109,11 @@ export default function SubmissionsPage({ data, session }) {
                 try {
                     message = await response.json().message;
                 } catch (e) {
-                    throw new Error(response.status);
+                    setError(response.status);
+                    return;
                 }
-                throw new Error(response.status, message);
+                setError(response.status, message);
+                return;
             }
             let data = await response.json();
             setUsers(data);
@@ -117,6 +129,11 @@ export default function SubmissionsPage({ data, session }) {
     return (
         <Container>
             <h1>Submissions</h1>
+            { error &&
+            <Alert variant="danger">
+                {error ? "Error: " + error : "Some unknown error occured..."}
+            </Alert>
+            }
             <Table>
                 <thead>
                     <tr>

@@ -12,6 +12,7 @@ export default function TaskDetailPage({ data, session }) {
     const router = useRouter();
     const { id } = router.query;
     const [submission, setSubmission] = useState({});
+    const [error, setError] = useState("");
 
     useRedirectToLogin(session);
 
@@ -29,9 +30,11 @@ export default function TaskDetailPage({ data, session }) {
                     try {
                         message = await response.json().message;
                     } catch (e) {
-                        throw new Error(response.status);
+                        setError(response.status || "Some unknown error occured");
+                        return;
                     }
-                    throw new Error(response.status, message);
+                    setError(message || "Some unknown error occured");
+                    return;
                 }
                 const submission = await response.json();
                 setSubmission(submission);
@@ -81,6 +84,11 @@ export default function TaskDetailPage({ data, session }) {
                     />
                 </Tab>
             </Tabs>
+            { error &&
+                <Alert variantt="dandger">
+                    {error}
+                </Alert>
+            }
         </Container>
     );
 }

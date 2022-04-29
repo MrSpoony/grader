@@ -29,9 +29,7 @@ export default function LoginPage({ session }) {
         });
         if (!response.ok) {
             const { message } = await response.json();
-            message ?
-                setError(message) :
-                setError("Something unexpected went wrong!");
+            setError(message || "Something unexpected went wrong!");
             setIsLoading(false);
             return;
         }
