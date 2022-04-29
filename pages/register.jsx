@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useRedirectToHome } from "@lib/hooks/useSession";
 import Loading from "@components/Loading";
+import { doRegister } from "@lib/api";
 
 const validateUser = (user) => {
     let errors = {};
@@ -36,26 +37,12 @@ export default function LoginPage({ session }) {
             setIsLoading(false);
             return;
         }
-        const response = await fetch("api/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(user)
-        });
-        if (!response.ok) {
-            const { message } = await response.json();
-            setError(message || "Something unexpected happened!");
+        try {
+            await doRegister(user);
+        } catch (e) {
+            setError(e.message);
             setIsLoading(false);
             return;
-        }
-        const data = await response.json();
-        if (data.username !== user.username ||
-            data.email !== user.email) {
-            setError("Something unexpected went wrong!");
-            setIsLoading(false);
-            return;
-
         }
         setIsLoading(false);
         router.push("/login");

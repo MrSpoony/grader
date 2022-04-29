@@ -50,12 +50,12 @@ The second line contains the sequence consisting of N integers ai.
 
 Output
 Print a single integer – the length of the longest increasing subsequence.` }, tr);
-            await Testgroup     .create({ testgrouptype_id: 1, task_id: 1,                                      points: 0,  timelimit: 1000, limits: ""}, tr);
-            await Testgroup     .create({ testgrouptype_id: 2, task_id: 1,                                      points: 50, timelimit: 1000, limits: "0 <= a, b, a + b <= 10^9" }, tr);
-            await Testgroup     .create({ testgrouptype_id: 2, task_id: 1,                                      points: 50, timelimit: 1000, limits: "0 <= a, b, a + b <= 10^19" }, tr);
-            await Testgroup     .create({ testgrouptype_id: 1, task_id: 2,                                      points: 0,  timelimit: 1000, limits: ""}, tr);
-            await Testgroup     .create({ testgrouptype_id: 2, task_id: 2,                                      points: 50, timelimit: 1000, limits: "1 <= N <= 20"}, tr);
-            await Testgroup     .create({ testgrouptype_id: 2, task_id: 2,                                      points: 50, timelimit: 1000, limits: "1 <= N <= 1000"}, tr);
+            await Testgroup     .create({ testgrouptype_id: 1, task_id: 1,                                      points: 0,  timelimit: 100, limits: ""}, tr);
+            await Testgroup     .create({ testgrouptype_id: 2, task_id: 1,                                      points: 50, timelimit: 100, limits: "0 <= a, b, a + b <= 10^9" }, tr);
+            await Testgroup     .create({ testgrouptype_id: 2, task_id: 1,                                      points: 50, timelimit: 100, limits: "0 <= a, b, a + b <= 10^19" }, tr);
+            await Testgroup     .create({ testgrouptype_id: 1, task_id: 2,                                      points: 0,  timelimit: 500, limits: ""}, tr);
+            await Testgroup     .create({ testgrouptype_id: 2, task_id: 2,                                      points: 50, timelimit: 500, limits: "1 <= N <= 20"}, tr);
+            await Testgroup     .create({ testgrouptype_id: 2, task_id: 2,                                      points: 50, timelimit: 500, limits: "1 <= N <= 1000"}, tr);
             await Testcase      .create({ testgroup_id: 1,     input: "2\n3",                                   output: "5" }, tr);
             await Testcase      .create({ testgroup_id: 1,     input: "700000000000000000\n300000000000000000", output: "1000000000000000000" }, tr);
             await Testcase      .create({ testgroup_id: 2,     input: "1 2",                                    output: "3"}, tr);

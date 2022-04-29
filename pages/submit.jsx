@@ -1,4 +1,5 @@
 import Loading from "@components/Loading";
+import { doSubmit } from "@lib/api";
 import { useRedirectToLogin } from "@lib/hooks/useSession";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -59,20 +60,14 @@ export default function SubmitPage({ session, data }) {
             setIsLoading(false);
             return;
         }
-        const response = await fetch("/api/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(submission),
-        });
-        if (!response.ok) {
-            setError(await response.json().message || 
-                "Something unexpected went wrong!");
+        let subm;
+        try {
+            subm = await doSubmit(submission);
+        } catch (e) {
+            setError(e.message);
             setIsLoading(false);
             return;
         }
-        const subm = await response.json();
         setIsLoading(false);
         router.push(`/detail/${subm.id}`);
     };

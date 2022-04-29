@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useRedirectToHome } from "@lib/hooks/useSession";
 import Loading from "@components/Loading";
+import { doLogin } from "@lib/api";
 
 export default function LoginPage({ session }) {
     const [error, setError] = useState("");
@@ -17,23 +18,13 @@ export default function LoginPage({ session }) {
         e.preventDefault();
         setIsLoading(true);
         setError("");
-        const response = await fetch("api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                ...login,
-                email: login.username
-            })
-        });
-        if (!response.ok) {
-            const { message } = await response.json();
-            setError(message || "Something unexpected went wrong!");
+        try {
+            await doLogin(login);
+        } catch (e) {
+            setError(e.message || "Else");
             setIsLoading(false);
             return;
         }
-        await response.json();
         await session.reloadSession();
         setIsLoading(false);
         router.push("/");

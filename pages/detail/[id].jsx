@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { Alert, Tab, Tabs, Container } from "react-bootstrap";
 import Loading from "@components/Loading";
+import { getSubmissionDetail } from "@lib/api";
 
 export default function TaskDetailPage({ data, session }) {
     const router = useRouter();
@@ -20,23 +21,13 @@ export default function TaskDetailPage({ data, session }) {
         const interval = setInterval(() => {
             if (!id) return;
             const loadSubmission = async () => {
-                const response = await fetch(`/api/submission/${id}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
-                });
-                if (!response.ok) {
-                    let message = "";
-                    try {
-                        message = await response.json().message;
-                    } catch (e) {
-                        setError(response.status || "Some unknown error occured");
-                        return;
-                    }
-                    setError(message || "Some unknown error occured");
+                let submission;
+                try {
+                    submission = await getSubmissionDetail(id);
+                } catch (e) {
+                    setError(e.message);
                     return;
                 }
-                const submission = await response.json();
                 setSubmission(submission);
             };
             loadSubmission();

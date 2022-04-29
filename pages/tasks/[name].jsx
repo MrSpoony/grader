@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import Loading from "@components/Loading";
 import { Alert } from "bootstrap";
+import { getSampleCases } from "@lib/api";
 
 export default function TaskDetailPage({ data }) {
     const router = useRouter();
@@ -29,11 +30,13 @@ export default function TaskDetailPage({ data }) {
             })?.type === "sample";
         });
         const loadSampleCases = async (sampleTestgroup) => {
-            const response = await fetch(`/api/testgroup/${sampleTestgroup.id}`);
-            if (!response.ok) setError(await response.json() || 
-                "Some unknown error occured");
-            const data = await response.json();
-            console.log(data);
+            let data;
+            try {
+                data = await getSampleCases(sampleTestgroup.id);
+            } catch (e) {
+                setError(e.message);
+                return;
+            }
             setSampleCases(data.testcases);
         };
         loadSampleCases(sampleTestgroup);

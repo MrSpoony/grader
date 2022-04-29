@@ -5,33 +5,24 @@ import Link from "next/link";
 import Status from "@components/Status";
 import Loading from "@components/Loading";
 import { Alert } from "bootstrap";
+import { getSubmissions, getUsers, updateSubmissionScore } from "@lib/api";
 
 export default function SubmissionsPage({ data, session }) {
+    useRedirectToLogin(session);
     const [submissions, setSubmissions] = useState([]);
     const [users, setUsers] = useState([]);
     const [newScore, setNewScore] = useState(0);
     const [error, setError] = useState("");
-    useRedirectToLogin(session);
 
     const deleteSubmission = async (s) => {
         setSubmissions(submissions.filter(sb => sb.id !== s.id));
         setError("");
-        const response = await fetch(`/api/submission/${s.id}`, {
-            method: "DELETE"
-        });
-        if (!response.ok) {
-            let message = "";
-            try {
-                message = await response.json().message;
-            } catch (e) {
-                setError(response.status || "Something unexpected went wrong!");
-                return;
-            }
-            setError(message || "Somethig unexpected went wrong!");
+        try {
+            await deleteSubmission(s);
+        } catch (e) {
+            setError(e.message);
             return;
         }
-        const data = await response.json();
-        console.log(data);
     };
 
     const changeScore = async (e, s) => {
@@ -47,26 +38,10 @@ export default function SubmissionsPage({ data, session }) {
                 newScore > 0 ? newScore : 0;
             return sb;
         }));
-        const response = await fetch(`/api/submission/${s.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                id: s.id,
-                score: newScore,
-            })
-        });
-        if (!response.ok) {
-            let message = "";
-            try {
-                message = await response.json().message;
-            } catch (e) {
-                setError(response.status);
-                return;
-            }
-            setError(response.status, message);
-            return;
+        try {
+            await updateSubmissionScore(s, newScore);
+        } catch (e) {
+            setError(e.message);
         }
     };
 
@@ -77,19 +52,13 @@ export default function SubmissionsPage({ data, session }) {
 
     useEffect(() => {
         const loadSubmissions = async () => {
-            const response = await fetch("/api/submission");
-            if (!response.ok) {
-                let message = "";
-                try {
-                    message = await response.json().message;
-                } catch (e) {
-                    setError(response.status);
-                    return;
-                }
-                setError(response.status, message);
+            let data;
+            try {
+                data = await getSubmissions();
+            } catch (e) {
+                setError(e.message);
                 return;
             }
-            let data = await response.json();
             data = data.sort((b, a) => {
                 a = new Date(a.time);
                 b = new Date(b.time);
@@ -103,19 +72,13 @@ export default function SubmissionsPage({ data, session }) {
     useEffect(() => {
         if (!session?.user?.roles?.find(r => r.role === "admin")) return;
         const loadUsers = async () => {
-            const response = await fetch("/api/user");
-            if (!response.ok) {
-                let message = "";
-                try {
-                    message = await response.json().message;
-                } catch (e) {
-                    setError(response.status);
-                    return;
-                }
-                setError(response.status, message);
+            let data;
+            try {
+                data = await getUsers();
+            } catch (e) {
+                setError(e.message);
                 return;
             }
-            let data = await response.json();
             setUsers(data);
         };
         loadUsers();
@@ -123,7 +86,8 @@ export default function SubmissionsPage({ data, session }) {
 
     if (!submissions ||
         !data.tasks ||
-        !data.statuses
+        !data.statuses ||
+        !session?.user
     ) return <Loading/>;
 
     return (
@@ -155,7 +119,7 @@ export default function SubmissionsPage({ data, session }) {
                         return (<tr key={s.id}>
                             <td>{new Date(s.time).toLocaleString()}</td>
                             { session?.user?.roles?.find(r => r.role === "admin") &&
-                            <td>{users && users.find(u => {
+                            <td>{users?.find(u => {
                                 return u.id === s.user_id;
                             })?.username}</td>}
                             <td><Link href={`/tasks/${
